@@ -22,37 +22,56 @@ import {
   BarChartHorizontal, 
   AreaChart, 
   Smartphone, 
-  Cog 
+  Cog,
+  FileSpreadsheet,
+  BookOpen,
+  Video,
+  Pen,
+  HeadphonesIcon,
+  Network,
+  Blocks
 } from 'lucide-react';
 
-// Reorganized career paths with Innovation paths distributed to other categories
+// Reorganized career paths with uploaded images
 const careerPathCategories = [
   {
     category: "Educação",
     paths: [
       {
-        title: 'Essencial',
-        icon: BarChart3,
-        color: 'bg-blue-100',
-        image: 'photo-1509316975850-ff9c5deb0cd9'
+        title: 'Alfabetização',
+        icon: BookOpen,
+        color: 'bg-green-100',
+        image: '/lovable-uploads/05197587-8a90-4957-933b-a82fa93c8014.png'
+      },
+      {
+        title: 'Planilhas',
+        icon: FileSpreadsheet,
+        color: 'bg-yellow-100',
+        image: '/lovable-uploads/239b6a9e-b89b-4525-b510-275c558d40de.png'
+      },
+      {
+        title: 'Jogos Educativos',
+        icon: Blocks,
+        color: 'bg-orange-100',
+        image: '/lovable-uploads/fb8f16fe-f31d-4c40-b982-538cc387d56e.png'
       },
       {
         title: 'Matemática',
         icon: Calculator,
         color: 'bg-red-100',
-        image: 'photo-1518495973542-4542c06a5843'
+        image: '/lovable-uploads/3216ab7a-0ca1-4040-a598-07fec8ba8fa4.png'
       },
       {
         title: 'Idiomas',
         icon: Languages,
         color: 'bg-blue-100',
-        image: 'photo-1469474968028-56623f02e42e'
+        image: '/lovable-uploads/f7b54e08-5975-481c-900f-be9dd1abddc7.png'
       },
       {
         title: 'Inteligência Emocional',
         icon: Heart,
         color: 'bg-rose-100',
-        image: 'photo-1470071459604-3b5ec3a7fe05'
+        image: '/lovable-uploads/93b9581f-ac4d-487e-9edf-613303560780.png'
       }
     ]
   },
@@ -62,50 +81,50 @@ const careerPathCategories = [
       {
         title: 'Programação',
         icon: Terminal,
-        color: 'bg-yellow-100',
-        image: 'photo-1498050108023-c5249f4df085'
+        color: 'bg-green-100',
+        image: '/lovable-uploads/6fe84a5a-232f-4744-b143-895b6fb89228.png'
       },
       {
-        title: 'Game',
+        title: 'Games',
         icon: Gamepad2,
-        color: 'bg-purple-100',
-        image: 'photo-1487887235947-a955ef187fcc'
+        color: 'bg-yellow-100',
+        image: '/lovable-uploads/4facc3ff-4a86-4058-b5d1-50f8fe07f172.png'
       },
       {
-        title: 'UI UX & Design',
+        title: 'UI/UX & Design',
         icon: Figma,
-        color: 'bg-pink-100',
-        image: 'photo-1460574283810-2aab119d8511'
+        color: 'bg-blue-100',
+        image: '/lovable-uploads/427b11a1-7f1b-414a-bc12-d094defed121.png'
       },
       {
-        title: 'SmartPhones',
+        title: 'Mobile',
         icon: Smartphone,
-        color: 'bg-teal-100',
-        image: 'photo-1434494878577-86c23bcb06b9'
+        color: 'bg-purple-100',
+        image: '/lovable-uploads/c675d8a6-8ac9-41ac-b5ec-ca0408124b8b.png'
       },
       {
         title: 'Inteligência Artificial',
         icon: BrainCircuit,
-        color: 'bg-indigo-100',
-        image: 'photo-1485827404703-89b55fcc595e'
+        color: 'bg-pink-100',
+        image: '/lovable-uploads/485396f3-f7c4-4db8-9e34-095aad9e245c.png'
       },
       {
         title: 'Robótica',
         icon: Bot,
-        color: 'bg-gray-100',
-        image: 'photo-1581091226825-a6a2a5aee158'
+        color: 'bg-indigo-100',
+        image: '/lovable-uploads/29f4e556-43a9-4aae-9e6b-59bdfe1fe1db.png'
       },
       {
-        title: 'Automações',
-        icon: Cog,
-        color: 'bg-slate-100',
-        image: 'photo-1526374965328-7f61d4dc18c5'
+        title: 'Modelagem 3D',
+        icon: Blocks,
+        color: 'bg-green-100',
+        image: '/lovable-uploads/46caaada-c1df-4fd9-9587-d3ca4bd4b829.png'
       },
       {
         title: 'Inteligência Emocional',
         icon: Heart,
         color: 'bg-rose-100',
-        image: 'photo-1470071459604-3b5ec3a7fe05'
+        image: '/lovable-uploads/93b9581f-ac4d-487e-9edf-613303560780.png'
       }
     ]
   },
@@ -116,25 +135,49 @@ const careerPathCategories = [
         title: 'Administração',
         icon: BarChartHorizontal,
         color: 'bg-green-100',
-        image: 'photo-1486312338219-ce68d2c6f44d'
+        image: '/lovable-uploads/d6306b74-5efa-4eb7-bec2-9366d8e8d6c2.png'
       },
       {
         title: 'Marketing Digital',
         icon: BarChart3,
+        color: 'bg-red-100',
+        image: '/lovable-uploads/511154ec-20e2-4e08-a6fd-accbc64d1942.png'
+      },
+      {
+        title: 'Atendimento',
+        icon: HeadphonesIcon,
         color: 'bg-orange-100',
-        image: 'photo-1581090464777-f3220bbe1b8b'
+        image: '/lovable-uploads/fdb8bfd1-b524-457b-8f65-0a0aaeca5da3.png'
       },
       {
         title: 'Análise de dados',
         icon: AreaChart,
-        color: 'bg-cyan-100',
-        image: 'photo-1488590528505-98d2b5aba04b'
+        color: 'bg-blue-100',
+        image: '/lovable-uploads/7610a6fd-f9a3-4699-a75d-c286453efa74.png'
+      },
+      {
+        title: 'Produção de Conteúdo',
+        icon: Pen,
+        color: 'bg-pink-100',
+        image: '/lovable-uploads/373230be-78bc-4695-87c9-fe422269d1f7.png'
+      },
+      {
+        title: 'Finanças',
+        icon: Cog,
+        color: 'bg-green-100',
+        image: '/lovable-uploads/8a95dc8b-6141-41c9-bdc3-570ddf7b97f2.png'
+      },
+      {
+        title: 'Videomaker',
+        icon: Video,
+        color: 'bg-blue-100',
+        image: '/lovable-uploads/fdb8bfd1-b524-457b-8f65-0a0aaeca5da3.png'
       },
       {
         title: 'Inteligência Emocional',
         icon: Heart,
         color: 'bg-rose-100',
-        image: 'photo-1470071459604-3b5ec3a7fe05'
+        image: '/lovable-uploads/93b9581f-ac4d-487e-9edf-613303560780.png'
       }
     ]
   }
@@ -159,9 +202,9 @@ const CareerPathsSection = () => {
                     <CarouselItem key={pathIndex} className="md:basis-1/3 lg:basis-1/4">
                       <Card className="category-card border hover:cursor-pointer h-full">
                         <CardContent className="p-0">
-                          <div className="h-32 overflow-hidden">
+                          <div className="h-40 overflow-hidden">
                             <img 
-                              src={`https://images.unsplash.com/${path.image}`} 
+                              src={path.image} 
                               alt={path.title}
                               className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                             />
