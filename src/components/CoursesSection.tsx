@@ -2,6 +2,13 @@
 import React from 'react';
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { 
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious
+} from "@/components/ui/carousel";
 
 const courses = [
   {
@@ -43,6 +50,26 @@ const courses = [
     image: 'https://via.placeholder.com/300x180?text=Java+OO',
     category: 'Programação',
     badgeColor: 'bg-red-100 text-red-800'
+  },
+  {
+    id: 5,
+    title: 'Data Science: análise e visualização',
+    instructor: 'Daniel Artine',
+    level: 'Intermediário',
+    hours: 14,
+    image: 'https://via.placeholder.com/300x180?text=Data+Science',
+    category: 'Data Science',
+    badgeColor: 'bg-green-100 text-green-800'
+  },
+  {
+    id: 6,
+    title: 'JavaScript: DOM e interfaces',
+    instructor: 'Juliana Amoasei',
+    level: 'Iniciante',
+    hours: 10,
+    image: 'https://via.placeholder.com/300x180?text=JavaScript',
+    category: 'Front-end',
+    badgeColor: 'bg-blue-100 text-blue-800'
   }
 ];
 
@@ -55,30 +82,36 @@ const CoursesSection = () => {
           <a href="#" className="text-alura-blue hover:underline">Ver todos os cursos</a>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {courses.map((course) => (
-            <Card key={course.id} className="course-card overflow-hidden border-none">
-              <div className="relative">
-                <img 
-                  src={course.image} 
-                  alt={course.title} 
-                  className="w-full h-48 object-cover"
-                />
-              </div>
-              <CardContent className="p-5">
-                <Badge className={`mb-3 font-normal ${course.badgeColor}`}>
-                  {course.category}
-                </Badge>
-                <h3 className="font-bold text-lg mb-2">{course.title}</h3>
-                <p className="text-alura-darkgray text-sm">{course.instructor}</p>
-              </CardContent>
-              <CardFooter className="px-5 pb-5 pt-0 flex justify-between text-sm text-alura-darkgray">
-                <span>{course.level}</span>
-                <span>{course.hours}h</span>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
+        <Carousel className="w-full">
+          <CarouselContent className="-ml-4">
+            {courses.map((course) => (
+              <CarouselItem key={course.id} className="pl-4 md:basis-1/2 lg:basis-1/4">
+                <Card className="course-card overflow-hidden border-none h-full">
+                  <div className="relative">
+                    <img 
+                      src={course.image} 
+                      alt={course.title} 
+                      className="w-full h-48 object-cover"
+                    />
+                  </div>
+                  <CardContent className="p-5">
+                    <Badge className={`mb-3 font-normal ${course.badgeColor}`}>
+                      {course.category}
+                    </Badge>
+                    <h3 className="font-bold text-lg mb-2">{course.title}</h3>
+                    <p className="text-alura-darkgray text-sm">{course.instructor}</p>
+                  </CardContent>
+                  <CardFooter className="px-5 pb-5 pt-0 flex justify-between text-sm text-alura-darkgray">
+                    <span>{course.level}</span>
+                    <span>{course.hours}h</span>
+                  </CardFooter>
+                </Card>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2" />
+          <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2" />
+        </Carousel>
       </div>
     </section>
   );
