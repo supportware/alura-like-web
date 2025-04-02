@@ -1,14 +1,20 @@
 
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Search, Menu, X } from "lucide-react";
+import { Search, Menu, X, User } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from '@/contexts/AuthContext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, logout } = useAuth();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleLogout = () => {
+    logout();
   };
 
   return (
@@ -24,10 +30,10 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
-            <a href="#" className="text-alura-darkgray hover:text-alura-blue transition-colors">Cursos</a>
+            <Link to="/courses" className="text-alura-darkgray hover:text-alura-blue transition-colors">Cursos</Link>
             <a href="#" className="text-alura-darkgray hover:text-alura-blue transition-colors">Formações</a>
             <a href="#" className="text-alura-darkgray hover:text-alura-blue transition-colors">Para Empresas</a>
-            <a href="#" className="text-alura-darkgray hover:text-alura-blue transition-colors">Comunidade</a>
+            <Link to="/blog" className="text-alura-darkgray hover:text-alura-blue transition-colors">Blog</Link>
           </nav>
 
           {/* Search and Login Buttons */}
@@ -35,12 +41,37 @@ const Navbar = () => {
             <Button variant="ghost" size="icon">
               <Search className="h-5 w-5 text-alura-darkgray" />
             </Button>
-            <Button variant="outline" className="text-alura-blue border-alura-blue hover:bg-alura-blue hover:text-white">
-              Login
-            </Button>
-            <Button className="bg-alura-blue text-white hover:bg-blue-600">
-              Matricule-se
-            </Button>
+            
+            {user ? (
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <div className="h-8 w-8 rounded-full bg-alura-blue flex items-center justify-center">
+                    <User className="h-5 w-5 text-white" />
+                  </div>
+                  <span className="text-sm">{user.email}</span>
+                </div>
+                <Button 
+                  variant="outline" 
+                  className="text-alura-blue border-alura-blue hover:bg-alura-blue hover:text-white"
+                  onClick={handleLogout}
+                >
+                  Sair
+                </Button>
+              </div>
+            ) : (
+              <>
+                <Link to="/sign-in">
+                  <Button variant="outline" className="text-alura-blue border-alura-blue hover:bg-alura-blue hover:text-white">
+                    Login
+                  </Button>
+                </Link>
+                <Link to="/sign-up">
+                  <Button className="bg-alura-blue text-white hover:bg-blue-600">
+                    Matricule-se
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -56,18 +87,44 @@ const Navbar = () => {
         {isMenuOpen && (
           <div className="md:hidden mt-4 py-4 border-t">
             <nav className="flex flex-col space-y-4">
-              <a href="#" className="text-alura-darkgray hover:text-alura-blue transition-colors">Cursos</a>
+              <Link to="/courses" className="text-alura-darkgray hover:text-alura-blue transition-colors">Cursos</Link>
               <a href="#" className="text-alura-darkgray hover:text-alura-blue transition-colors">Formações</a>
               <a href="#" className="text-alura-darkgray hover:text-alura-blue transition-colors">Para Empresas</a>
-              <a href="#" className="text-alura-darkgray hover:text-alura-blue transition-colors">Comunidade</a>
-              <div className="flex space-x-4 pt-4">
-                <Button variant="outline" className="flex-1 text-alura-blue border-alura-blue hover:bg-alura-blue hover:text-white">
-                  Login
-                </Button>
-                <Button className="flex-1 bg-alura-blue text-white hover:bg-blue-600">
-                  Matricule-se
-                </Button>
-              </div>
+              <Link to="/blog" className="text-alura-darkgray hover:text-alura-blue transition-colors">Blog</Link>
+              
+              {user ? (
+                <div className="pt-4">
+                  <div className="flex items-center space-x-2 mb-4">
+                    <div className="h-8 w-8 rounded-full bg-alura-blue flex items-center justify-center">
+                      <User className="h-5 w-5 text-white" />
+                    </div>
+                    <span className="text-sm">{user.email}</span>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    className="w-full text-alura-blue border-alura-blue hover:bg-alura-blue hover:text-white"
+                    onClick={handleLogout}
+                  >
+                    Sair
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex flex-col space-y-4 pt-4">
+                  <Link to="/sign-in" className="w-full">
+                    <Button 
+                      variant="outline" 
+                      className="w-full text-alura-blue border-alura-blue hover:bg-alura-blue hover:text-white"
+                    >
+                      Login
+                    </Button>
+                  </Link>
+                  <Link to="/sign-up" className="w-full">
+                    <Button className="w-full bg-alura-blue text-white hover:bg-blue-600">
+                      Matricule-se
+                    </Button>
+                  </Link>
+                </div>
+              )}
             </nav>
           </div>
         )}
