@@ -5,14 +5,14 @@ import { Card, CardContent } from "@/components/ui/card";
 
 const categories = [
   {
-    title: 'Programação',
+    title: 'Tecnologia',
     description: 'Lógica, Python, PHP, Java, .NET e muito mais',
     icon: Code,
     color: 'bg-blue-100'
   },
   {
-    title: 'Front-end',
-    description: 'HTML, CSS, JavaScript, React, Angular',
+    title: 'Reforço escolar',
+    description: 'Matemática, Português, Ciências, História',
     icon: MonitorSmartphone,
     color: 'bg-green-100'
   },
@@ -23,20 +23,20 @@ const categories = [
     color: 'bg-purple-100'
   },
   {
-    title: 'DevOps',
-    description: 'AWS, Azure, Docker, Kubernetes, CI/CD',
+    title: 'Vendas',
+    description: 'Técnicas de vendas, Negociação, Marketing',
     icon: Database,
     color: 'bg-yellow-100'
   },
   {
-    title: 'Inovação & Gestão',
-    description: 'Agile, Lean, Liderança, Gestão de Produtos',
+    title: 'Marketing',
+    description: 'Marketing Digital, SEO, Redes Sociais',
     icon: FileText,
     color: 'bg-red-100'
   },
   {
-    title: 'Certificação',
-    description: 'Prepare-se para certificações do mercado',
+    title: 'Concursos públicos',
+    description: 'Prepare-se para concursos e provas públicas',
     icon: BookOpen,
     color: 'bg-indigo-100'
   }
