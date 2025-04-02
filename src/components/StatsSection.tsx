@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BookOpen, Users, ThumbsUp, Trophy, Graduation, Award } from 'lucide-react';
+import { BookOpen, Users, ThumbsUp, Trophy, GraduationCap, Award } from 'lucide-react';
 
 const stats = [
   {
@@ -30,7 +30,7 @@ const stats = [
   {
     title: 'Bolsas',
     value: '5.000+',
-    icon: Graduation,
+    icon: GraduationCap,
     description: 'bolsas integrais'
   },
   {

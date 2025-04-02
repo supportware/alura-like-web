@@ -11,7 +11,7 @@ import {
   Languages, 
   Calculator, 
   Heart, 
-  Robot, 
+  Bot, 
   BarChartHorizontal, 
   AreaChart, 
   Smartphone, 
@@ -66,7 +66,7 @@ const careerPaths = [
   },
   {
     title: 'Robótica',
-    icon: Robot,
+    icon: Bot,
     color: 'bg-gray-100'
   },
   {
