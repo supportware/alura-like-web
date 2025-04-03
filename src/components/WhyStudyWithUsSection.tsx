@@ -1,17 +1,17 @@
 
 import React from 'react';
-import { CheckCircle, Clock, PenTool, Monitor, Shield, Zap } from 'lucide-react';
+import { CheckCircle, Clock, PenTool, Monitor, Shield, School } from 'lucide-react';
 
 const reasons = [
   {
-    title: 'Flexibilidade de horários',
-    description: 'Estude no seu próprio ritmo e nos horários que forem mais convenientes para você',
-    icon: Clock
+    title: 'Escola com 28 anos de experiência',
+    description: 'Mais de 28 anos de atuação no mercado educacional, com expertise comprovada.',
+    icon: School
   },
   {
-    title: 'Conteúdo prático',
-    description: 'Projetos reais para aplicar os conhecimentos aprendidos de forma imediata',
-    icon: PenTool
+    title: 'Treinamento Individualizado',
+    description: 'Conteúdo forjado por pedagogos e especialistas em cada área, com atenção personalizada.',
+    icon: CheckCircle
   },
   {
     title: 'Acesso multiplataforma',
@@ -26,12 +26,12 @@ const reasons = [
   {
     title: 'Professores especialistas',
     description: 'Aprenda com profissionais que atuam no mercado e conhecem as demandas reais',
-    icon: CheckCircle
+    icon: PenTool
   },
   {
-    title: 'Comunidade ativa',
-    description: 'Troque experiências com outros alunos e amplie seu networking profissional',
-    icon: Zap
+    title: 'Garantia de Aprendizado',
+    description: 'Aulas e exercícios interativos, NÃO SÃO VÍDEO-AULAS. Metodologia prática e eficiente.',
+    icon: Clock
   }
 ];
 
