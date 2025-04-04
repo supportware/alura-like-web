@@ -26,6 +26,9 @@ import {
 } from 'lucide-react';
 import Dashboard from '@/components/backoffice/Dashboard';
 import StudyReasonsEditor from '@/components/backoffice/StudyReasonsEditor';
+import FAQEditor from '@/components/backoffice/FAQEditor';
+import TestimonialsEditor from '@/components/backoffice/TestimonialsEditor';
+import StatsEditor from '@/components/backoffice/StatsEditor';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -55,13 +58,13 @@ const Backoffice = () => {
       case 'career-paths':
         return <div className="p-6">Gerenciamento de Trilhas de Carreira</div>;
       case 'testimonials':
-        return <div className="p-6">Gerenciamento de Depoimentos</div>;
+        return <TestimonialsEditor />;
       case 'stats':
-        return <div className="p-6">Gerenciamento de Estatísticas</div>;
+        return <StatsEditor />;
       case 'study-reasons':
         return <StudyReasonsEditor />;
       case 'faq':
-        return <div className="p-6">Gerenciamento de FAQ</div>;
+        return <FAQEditor />;
       default:
         return <Dashboard />;
     }
