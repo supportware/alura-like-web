@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Dialog, 
   DialogContent, 
@@ -22,10 +22,10 @@ import {
   Trash, 
   Plus,
   Save,
-  X
+  X,
+  Loader2
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
-import { studyReasons, StudyReason } from '@/data/studyReasons';
 import { 
   Form,
   FormControl,
@@ -37,13 +37,13 @@ import {
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-
-// This is a mock function that would save to your actual data store
-const saveReasons = async (reasons: StudyReason[]) => {
-  // In a real app, this would update your database
-  console.log('Saving reasons:', reasons);
-  return new Promise(resolve => setTimeout(resolve, 1000));
-};
+import { 
+  fetchStudyReasons, 
+  StudyReason, 
+  saveStudyReason, 
+  updateStudyReason, 
+  deleteStudyReason 
+} from '@/services/supabase';
 
 const formSchema = z.object({
   title: z.string().min(1, 'O título é obrigatório'),
@@ -55,10 +55,11 @@ type FormValues = z.infer<typeof formSchema>;
 
 const StudyReasonsEditor = () => {
   const { toast } = useToast();
-  const [reasons, setReasons] = useState<StudyReason[]>(studyReasons);
+  const [reasons, setReasons] = useState<StudyReason[]>([]);
   const [editingReason, setEditingReason] = useState<StudyReason | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -69,56 +70,74 @@ const StudyReasonsEditor = () => {
     }
   });
 
+  // Carregar dados iniciais
+  useEffect(() => {
+    loadReasons();
+  }, []);
+
+  const loadReasons = async () => {
+    setIsInitialLoading(true);
+    const data = await fetchStudyReasons();
+    setReasons(data);
+    setIsInitialLoading(false);
+  };
+
   const onSubmit = async (values: FormValues) => {
-    // In a real implementation, you would handle icon selection properly
-    // This is just a mock implementation using the first icon from studyReasons as a placeholder
-    
-    if (editingReason) {
-      // Update existing reason - ensure we maintain the required properties
-      const updatedReasons = reasons.map(reason => 
-        reason === editingReason 
-          ? { 
-              ...reason,
-              title: values.title, 
-              description: values.description 
-            } 
-          : reason
-      );
-      setReasons(updatedReasons);
-    } else {
-      // Add new reason - ensure we create a proper StudyReason object with all required properties
-      const newReason: StudyReason = { 
-        title: values.title, 
-        description: values.description, 
-        icon: studyReasons[0].icon // Just using the first icon as a placeholder
-      };
-      setReasons([...reasons, newReason]);
+    setLoading(true);
+    try {
+      if (editingReason) {
+        // Atualizar razão existente
+        const updated = await updateStudyReason(editingReason.id, values);
+        if (updated) {
+          setReasons(prev => prev.map(r => r.id === editingReason.id ? updated : r));
+          toast({
+            title: "Razão atualizada",
+            description: "Suas alterações foram salvas com sucesso.",
+          });
+        }
+      } else {
+        // Adicionar nova razão
+        const newReason = await saveStudyReason(values);
+        if (newReason) {
+          setReasons(prev => [...prev, newReason]);
+          toast({
+            title: "Nova razão adicionada",
+            description: "A razão foi adicionada com sucesso.",
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao salvar:", error);
+      toast({
+        title: "Erro ao salvar",
+        description: "Ocorreu um erro ao salvar as alterações.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+      setIsDialogOpen(false);
+      setEditingReason(null);
+      form.reset();
     }
-    
-    setIsDialogOpen(false);
-    setEditingReason(null);
-    form.reset();
-    
-    toast({
-      title: editingReason ? "Razão atualizada" : "Nova razão adicionada",
-      description: "Suas alterações foram salvas com sucesso.",
-    });
   };
 
   const handleEditReason = (reason: StudyReason) => {
     setEditingReason(reason);
     form.setValue('title', reason.title);
     form.setValue('description', reason.description);
-    form.setValue('icon', 'School'); // Just a placeholder, would be dynamic in real app
+    form.setValue('icon', reason.icon);
     setIsDialogOpen(true);
   };
 
-  const handleDeleteReason = (reasonToDelete: StudyReason) => {
-    setReasons(reasons.filter(reason => reason !== reasonToDelete));
-    toast({
-      title: "Razão removida",
-      description: "A razão foi removida com sucesso.",
-    });
+  const handleDeleteReason = async (reasonToDelete: StudyReason) => {
+    const success = await deleteStudyReason(reasonToDelete.id);
+    if (success) {
+      setReasons(reasons.filter(reason => reason.id !== reasonToDelete.id));
+      toast({
+        title: "Razão removida",
+        description: "A razão foi removida com sucesso.",
+      });
+    }
   };
 
   const handleAddNewReason = () => {
@@ -127,24 +146,13 @@ const StudyReasonsEditor = () => {
     setIsDialogOpen(true);
   };
 
-  const handleSaveAllReasons = async () => {
-    setLoading(true);
-    try {
-      await saveReasons(reasons);
-      toast({
-        title: "Todas as alterações salvas",
-        description: "As razões para estudar foram atualizadas com sucesso.",
-      });
-    } catch (error) {
-      toast({
-        title: "Erro ao salvar",
-        description: "Ocorreu um erro ao salvar as alterações.",
-        variant: "destructive"
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  if (isInitialLoading) {
+    return (
+      <div className="p-6 flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-alura-blue" />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6">
@@ -158,13 +166,6 @@ const StudyReasonsEditor = () => {
             <Plus className="mr-2 h-4 w-4" />
             Adicionar
           </Button>
-          <Button
-            onClick={handleSaveAllReasons}
-            disabled={loading}
-          >
-            <Save className="mr-2 h-4 w-4" />
-            Salvar todas alterações
-          </Button>
         </div>
       </div>
 
@@ -173,14 +174,16 @@ const StudyReasonsEditor = () => {
           <TableRow>
             <TableHead>Título</TableHead>
             <TableHead>Descrição</TableHead>
+            <TableHead>Ícone</TableHead>
             <TableHead className="w-[100px]">Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {reasons.map((reason, index) => (
-            <TableRow key={index}>
+          {reasons.map((reason) => (
+            <TableRow key={reason.id}>
               <TableCell className="font-medium">{reason.title}</TableCell>
               <TableCell>{reason.description}</TableCell>
+              <TableCell>{reason.icon}</TableCell>
               <TableCell>
                 <div className="flex space-x-2">
                   <Button
@@ -253,7 +256,7 @@ const StudyReasonsEditor = () => {
                     </FormControl>
                     <FormMessage />
                     <p className="text-xs text-muted-foreground">
-                      Em uma implementação real, seria um seletor de ícones
+                      Ícones disponíveis: School, CheckCircle, Monitor, Shield, PenTool, Clock
                     </p>
                   </FormItem>
                 )}
@@ -264,12 +267,17 @@ const StudyReasonsEditor = () => {
                   type="button" 
                   variant="outline" 
                   onClick={() => setIsDialogOpen(false)}
+                  disabled={loading}
                 >
                   <X className="mr-2 h-4 w-4" />
                   Cancelar
                 </Button>
-                <Button type="submit">
-                  <Save className="mr-2 h-4 w-4" />
+                <Button type="submit" disabled={loading}>
+                  {loading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Save className="mr-2 h-4 w-4" />
+                  )}
                   Salvar
                 </Button>
               </DialogFooter>

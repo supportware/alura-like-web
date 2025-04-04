@@ -9,7 +9,225 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      blog_posts: {
+        Row: {
+          author: string
+          category: string
+          content: string
+          created_at: string
+          date: string
+          excerpt: string
+          id: string
+          image_url: string
+          read_time: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author: string
+          category: string
+          content: string
+          created_at?: string
+          date: string
+          excerpt: string
+          id?: string
+          image_url: string
+          read_time: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string
+          category?: string
+          content?: string
+          created_at?: string
+          date?: string
+          excerpt?: string
+          id?: string
+          image_url?: string
+          read_time?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      career_paths: {
+        Row: {
+          created_at: string
+          description: string
+          icon: string
+          id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          icon: string
+          id?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          icon?: string
+          id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      courses: {
+        Row: {
+          badge_color: string
+          category: string
+          created_at: string
+          hours: number
+          id: string
+          image_url: string
+          instructor: string
+          level: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          badge_color: string
+          category: string
+          created_at?: string
+          hours: number
+          id?: string
+          image_url: string
+          instructor: string
+          level: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          badge_color?: string
+          category?: string
+          created_at?: string
+          hours?: number
+          id?: string
+          image_url?: string
+          instructor?: string
+          level?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      faqs: {
+        Row: {
+          answer: string
+          created_at: string
+          id: string
+          question: string
+          updated_at: string
+        }
+        Insert: {
+          answer: string
+          created_at?: string
+          id?: string
+          question: string
+          updated_at?: string
+        }
+        Update: {
+          answer?: string
+          created_at?: string
+          id?: string
+          question?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      stats: {
+        Row: {
+          created_at: string
+          icon: string
+          id: string
+          title: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          icon: string
+          id?: string
+          title: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          created_at?: string
+          icon?: string
+          id?: string
+          title?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
+      study_reasons: {
+        Row: {
+          created_at: string
+          description: string
+          icon: string
+          id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          icon: string
+          id?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          icon?: string
+          id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      testimonials: {
+        Row: {
+          company: string
+          content: string
+          created_at: string
+          id: string
+          image_url: string | null
+          name: string
+          role: string
+          updated_at: string
+        }
+        Insert: {
+          company: string
+          content: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          name: string
+          role: string
+          updated_at?: string
+        }
+        Update: {
+          company?: string
+          content?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+          role?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
