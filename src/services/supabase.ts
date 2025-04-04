@@ -1,24 +1,17 @@
 
-import { createClient } from '@supabase/supabase-js';
-import { Database } from '@/integrations/supabase/types';
-import { toast } from '@/components/ui/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
-export const supabase = createClient<Database>(
-  import.meta.env.VITE_SUPABASE_URL || '',
-  import.meta.env.VITE_SUPABASE_ANON_KEY || ''
-);
-
-// Tipos para os dados das tabelas
-export type StudyReason = {
+// Interfaces para as entidades
+export interface StudyReason {
   id: string;
   title: string;
   description: string;
   icon: string;
   created_at: string;
   updated_at: string;
-};
+}
 
-export type Course = {
+export interface Course {
   id: string;
   title: string;
   instructor: string;
@@ -29,18 +22,18 @@ export type Course = {
   badge_color: string;
   created_at: string;
   updated_at: string;
-};
+}
 
-export type CareerPath = {
+export interface CareerPath {
   id: string;
   title: string;
   description: string;
   icon: string;
   created_at: string;
   updated_at: string;
-};
+}
 
-export type Testimonial = {
+export interface Testimonial {
   id: string;
   name: string;
   role: string;
@@ -49,26 +42,26 @@ export type Testimonial = {
   image_url?: string;
   created_at: string;
   updated_at: string;
-};
+}
 
-export type Stat = {
+export interface Stat {
   id: string;
   title: string;
   value: string;
   icon: string;
   created_at: string;
   updated_at: string;
-};
+}
 
-export type FAQ = {
+export interface FAQ {
   id: string;
   question: string;
   answer: string;
   created_at: string;
   updated_at: string;
-};
+}
 
-export type BlogPost = {
+export interface BlogPost {
   id: string;
   title: string;
   excerpt: string;
@@ -80,65 +73,61 @@ export type BlogPost = {
   category: string;
   created_at: string;
   updated_at: string;
-};
+}
 
-// Funções para fetch dos dados
-
-// Study Reasons
+// Funções para buscar dados
 export const fetchStudyReasons = async (): Promise<StudyReason[]> => {
   const { data, error } = await supabase
     .from('study_reasons')
-    .select('*')
-    .order('created_at');
+    .select('*');
 
   if (error) {
-    console.error('Erro ao buscar razões de estudo:', error);
-    toast({
-      title: 'Erro',
-      description: 'Não foi possível carregar as razões de estudo.',
-      variant: 'destructive',
-    });
+    console.error('Error fetching study reasons:', error);
     return [];
   }
 
   return data || [];
 };
 
-export const saveStudyReason = async (reason: Omit<StudyReason, 'id' | 'created_at' | 'updated_at'>): Promise<StudyReason | null> => {
+export const createStudyReason = async (newReason: Omit<StudyReason, 'id' | 'created_at' | 'updated_at'>): Promise<StudyReason | null> => {
   const { data, error } = await supabase
     .from('study_reasons')
-    .insert([reason])
-    .select()
+    .insert(newReason)
+    .select('*')
     .single();
 
   if (error) {
-    console.error('Erro ao salvar razão de estudo:', error);
-    toast({
-      title: 'Erro',
-      description: 'Não foi possível salvar a razão de estudo.',
-      variant: 'destructive',
-    });
+    console.error('Error creating study reason:', error);
     return null;
   }
 
   return data;
 };
 
-export const updateStudyReason = async (id: string, reason: Partial<StudyReason>): Promise<StudyReason | null> => {
+export const createMultipleStudyReasons = async (reasons: Omit<StudyReason, 'id' | 'created_at' | 'updated_at'>[]): Promise<StudyReason[] | null> => {
   const { data, error } = await supabase
     .from('study_reasons')
-    .update(reason)
+    .insert(reasons)
+    .select('*');
+
+  if (error) {
+    console.error('Error creating multiple study reasons:', error);
+    return null;
+  }
+
+  return data;
+};
+
+export const updateStudyReason = async (id: string, updates: Partial<StudyReason>): Promise<StudyReason | null> => {
+  const { data, error } = await supabase
+    .from('study_reasons')
+    .update(updates)
     .eq('id', id)
-    .select()
+    .select('*')
     .single();
 
   if (error) {
-    console.error('Erro ao atualizar razão de estudo:', error);
-    toast({
-      title: 'Erro',
-      description: 'Não foi possível atualizar a razão de estudo.',
-      variant: 'destructive',
-    });
+    console.error('Error updating study reason:', error);
     return null;
   }
 
@@ -152,36 +141,24 @@ export const deleteStudyReason = async (id: string): Promise<boolean> => {
     .eq('id', id);
 
   if (error) {
-    console.error('Erro ao excluir razão de estudo:', error);
-    toast({
-      title: 'Erro',
-      description: 'Não foi possível excluir a razão de estudo.',
-      variant: 'destructive',
-    });
+    console.error('Error deleting study reason:', error);
     return false;
   }
 
   return true;
 };
 
-// Courses
 export const fetchCourses = async (): Promise<Course[]> => {
   const { data, error } = await supabase
     .from('courses')
-    .select('*')
-    .order('created_at');
+    .select('*');
 
   if (error) {
-    console.error('Erro ao buscar cursos:', error);
-    toast({
-      title: 'Erro',
-      description: 'Não foi possível carregar os cursos.',
-      variant: 'destructive',
-    });
+    console.error('Error fetching courses:', error);
     return [];
   }
 
   return data || [];
 };
 
-// Similar functions can be added for other data types
+// Outras funções de serviço podem ser adicionadas conforme necessário

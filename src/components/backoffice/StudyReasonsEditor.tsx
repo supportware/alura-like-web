@@ -1,288 +1,275 @@
 
 import React, { useState, useEffect } from 'react';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogFooter
-} from '@/components/ui/dialog';
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow
+  TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { 
-  Edit, 
-  Trash, 
-  Plus,
-  Save,
-  X,
-  Loader2
-} from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
-import { 
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from '@/components/ui/form';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { 
-  fetchStudyReasons, 
-  StudyReason, 
-  saveStudyReason, 
-  updateStudyReason, 
-  deleteStudyReason 
-} from '@/services/supabase';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { useToast } from '@/hooks/use-toast';
+import { School, CheckCircle, Monitor, Shield, PenTool, Clock, Plus, Pencil, Trash2 } from 'lucide-react';
+import { IconMap } from '@/lib/utils';
+import { fetchStudyReasons, createStudyReason, updateStudyReason, deleteStudyReason, StudyReason } from '@/services/supabase';
 
-const formSchema = z.object({
-  title: z.string().min(1, 'O título é obrigatório'),
-  description: z.string().min(1, 'A descrição é obrigatória'),
-  icon: z.string().min(1, 'O ícone é obrigatório')
-});
-
-type FormValues = z.infer<typeof formSchema>;
+const icons = [
+  { name: 'School', icon: School },
+  { name: 'CheckCircle', icon: CheckCircle },
+  { name: 'Monitor', icon: Monitor },
+  { name: 'Shield', icon: Shield },
+  { name: 'PenTool', icon: PenTool },
+  { name: 'Clock', icon: Clock },
+];
 
 const StudyReasonsEditor = () => {
-  const { toast } = useToast();
   const [reasons, setReasons] = useState<StudyReason[]>([]);
-  const [editingReason, setEditingReason] = useState<StudyReason | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
-
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: '',
-      description: '',
-      icon: 'School'
-    }
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentReason, setCurrentReason] = useState<Partial<StudyReason>>({
+    title: '',
+    description: '',
+    icon: 'School'
   });
+  const { toast } = useToast();
 
-  // Carregar dados iniciais
   useEffect(() => {
     loadReasons();
   }, []);
 
   const loadReasons = async () => {
-    setIsInitialLoading(true);
-    const data = await fetchStudyReasons();
-    setReasons(data);
-    setIsInitialLoading(false);
-  };
-
-  const onSubmit = async (values: FormValues) => {
-    setLoading(true);
+    setIsLoading(true);
     try {
-      if (editingReason) {
-        // Atualizar razão existente
-        const updated = await updateStudyReason(editingReason.id, values);
-        if (updated) {
-          setReasons(prev => prev.map(r => r.id === editingReason.id ? updated : r));
-          toast({
-            title: "Razão atualizada",
-            description: "Suas alterações foram salvas com sucesso.",
-          });
-        }
-      } else {
-        // Adicionar nova razão
-        const newReason = await saveStudyReason(values);
-        if (newReason) {
-          setReasons(prev => [...prev, newReason]);
-          toast({
-            title: "Nova razão adicionada",
-            description: "A razão foi adicionada com sucesso.",
-          });
-        }
-      }
+      const data = await fetchStudyReasons();
+      setReasons(data);
     } catch (error) {
-      console.error("Erro ao salvar:", error);
+      console.error('Error loading reasons:', error);
       toast({
-        title: "Erro ao salvar",
-        description: "Ocorreu um erro ao salvar as alterações.",
-        variant: "destructive"
+        title: 'Erro ao carregar dados',
+        description: 'Não foi possível carregar as razões para estudar',
+        variant: 'destructive',
       });
     } finally {
-      setLoading(false);
-      setIsDialogOpen(false);
-      setEditingReason(null);
-      form.reset();
+      setIsLoading(false);
     }
   };
 
-  const handleEditReason = (reason: StudyReason) => {
-    setEditingReason(reason);
-    form.setValue('title', reason.title);
-    form.setValue('description', reason.description);
-    form.setValue('icon', reason.icon);
+  const handleOpenAddDialog = () => {
+    setCurrentReason({
+      title: '',
+      description: '',
+      icon: 'School'
+    });
+    setIsEditing(false);
     setIsDialogOpen(true);
   };
 
-  const handleDeleteReason = async (reasonToDelete: StudyReason) => {
-    const success = await deleteStudyReason(reasonToDelete.id);
-    if (success) {
-      setReasons(reasons.filter(reason => reason.id !== reasonToDelete.id));
+  const handleOpenEditDialog = (reason: StudyReason) => {
+    setCurrentReason({
+      id: reason.id,
+      title: reason.title,
+      description: reason.description,
+      icon: reason.icon
+    });
+    setIsEditing(true);
+    setIsDialogOpen(true);
+  };
+
+  const handleSaveReason = async () => {
+    if (!currentReason.title || !currentReason.description || !currentReason.icon) {
       toast({
-        title: "Razão removida",
-        description: "A razão foi removida com sucesso.",
+        title: 'Campos obrigatórios',
+        description: 'Por favor preencha todos os campos',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      if (isEditing && currentReason.id) {
+        await updateStudyReason(currentReason.id, {
+          title: currentReason.title,
+          description: currentReason.description,
+          icon: currentReason.icon
+        });
+        toast({
+          title: 'Atualizado com sucesso',
+          description: 'As alterações foram salvas',
+        });
+      } else {
+        await createStudyReason({
+          title: currentReason.title!,
+          description: currentReason.description!,
+          icon: currentReason.icon!
+        });
+        toast({
+          title: 'Criado com sucesso',
+          description: 'Nova razão para estudar adicionada',
+        });
+      }
+      setIsDialogOpen(false);
+      loadReasons();
+    } catch (error) {
+      console.error('Error saving reason:', error);
+      toast({
+        title: 'Erro ao salvar',
+        description: 'Não foi possível salvar as alterações',
+        variant: 'destructive',
       });
     }
   };
 
-  const handleAddNewReason = () => {
-    setEditingReason(null);
-    form.reset();
-    setIsDialogOpen(true);
+  const handleDeleteReason = async (id: string) => {
+    if (window.confirm('Tem certeza que deseja excluir este item?')) {
+      try {
+        await deleteStudyReason(id);
+        toast({
+          title: 'Excluído com sucesso',
+          description: 'O item foi removido',
+        });
+        loadReasons();
+      } catch (error) {
+        console.error('Error deleting reason:', error);
+        toast({
+          title: 'Erro ao excluir',
+          description: 'Não foi possível excluir o item',
+          variant: 'destructive',
+        });
+      }
+    }
   };
 
-  if (isInitialLoading) {
-    return (
-      <div className="p-6 flex items-center justify-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-alura-blue" />
-      </div>
-    );
-  }
+  const renderIconComponent = (iconName: string) => {
+    const IconComponent = IconMap[iconName as keyof typeof IconMap] || School;
+    return <IconComponent className="h-5 w-5" />;
+  };
 
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Por que estudar conosco</h1>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={handleAddNewReason}
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Adicionar
-          </Button>
-        </div>
+        <Button onClick={handleOpenAddDialog}>
+          <Plus className="mr-2 h-4 w-4" /> Adicionar
+        </Button>
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Título</TableHead>
-            <TableHead>Descrição</TableHead>
-            <TableHead>Ícone</TableHead>
-            <TableHead className="w-[100px]">Ações</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {reasons.map((reason) => (
-            <TableRow key={reason.id}>
-              <TableCell className="font-medium">{reason.title}</TableCell>
-              <TableCell>{reason.description}</TableCell>
-              <TableCell>{reason.icon}</TableCell>
-              <TableCell>
-                <div className="flex space-x-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleEditReason(reason)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDeleteReason(reason)}
-                  >
-                    <Trash className="h-4 w-4" />
-                  </Button>
-                </div>
-              </TableCell>
+      {isLoading ? (
+        <div className="flex justify-center items-center h-48">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-alura-blue"></div>
+        </div>
+      ) : (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Ícone</TableHead>
+              <TableHead>Título</TableHead>
+              <TableHead>Descrição</TableHead>
+              <TableHead className="text-right">Ações</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {reasons.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                  Nenhum item encontrado
+                </TableCell>
+              </TableRow>
+            ) : (
+              reasons.map((reason) => (
+                <TableRow key={reason.id}>
+                  <TableCell>
+                    <div className="flex items-center justify-center">
+                      {renderIconComponent(reason.icon)}
+                    </div>
+                  </TableCell>
+                  <TableCell>{reason.title}</TableCell>
+                  <TableCell className="max-w-xs truncate">{reason.description}</TableCell>
+                  <TableCell className="text-right space-x-2">
+                    <Button variant="ghost" size="icon" onClick={() => handleOpenEditDialog(reason)}>
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => handleDeleteReason(reason.id)}>
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      )}
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {editingReason ? 'Editar Razão' : 'Adicionar Nova Razão'}
+              {isEditing ? 'Editar razão para estudar' : 'Adicionar razão para estudar'}
             </DialogTitle>
           </DialogHeader>
-          
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Título</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Título da razão" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <label htmlFor="title" className="text-sm font-medium">Título</label>
+              <Input
+                id="title"
+                value={currentReason.title || ''}
+                onChange={(e) => setCurrentReason({ ...currentReason, title: e.target.value })}
+                placeholder="Ex: Treinamento individualizado"
               />
-              
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Descrição</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Descrição detalhada" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="description" className="text-sm font-medium">Descrição</label>
+              <Textarea
+                id="description"
+                value={currentReason.description || ''}
+                onChange={(e) => setCurrentReason({ ...currentReason, description: e.target.value })}
+                placeholder="Descreva brevemente esta razão"
+                rows={3}
               />
-              
-              <FormField
-                control={form.control}
-                name="icon"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Ícone</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Nome do ícone" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                    <p className="text-xs text-muted-foreground">
-                      Ícones disponíveis: School, CheckCircle, Monitor, Shield, PenTool, Clock
-                    </p>
-                  </FormItem>
-                )}
-              />
-              
-              <DialogFooter>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={() => setIsDialogOpen(false)}
-                  disabled={loading}
-                >
-                  <X className="mr-2 h-4 w-4" />
-                  Cancelar
-                </Button>
-                <Button type="submit" disabled={loading}>
-                  {loading ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <Save className="mr-2 h-4 w-4" />
-                  )}
-                  Salvar
-                </Button>
-              </DialogFooter>
-            </form>
-          </Form>
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="icon" className="text-sm font-medium">Ícone</label>
+              <Select
+                value={currentReason.icon || 'School'}
+                onValueChange={(value) => setCurrentReason({ ...currentReason, icon: value })}
+              >
+                <SelectTrigger id="icon">
+                  <SelectValue placeholder="Selecione um ícone" />
+                </SelectTrigger>
+                <SelectContent>
+                  {icons.map((icon) => (
+                    <SelectItem key={icon.name} value={icon.name}>
+                      <div className="flex items-center">
+                        <icon.icon className="mr-2 h-4 w-4" />
+                        <span>{icon.name}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancelar</Button>
+            <Button onClick={handleSaveReason}>Salvar</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
