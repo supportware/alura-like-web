@@ -5,7 +5,6 @@ import {
   DialogContent, 
   DialogHeader, 
   DialogTitle, 
-  DialogTrigger,
   DialogFooter
 } from '@/components/ui/dialog';
 import {
@@ -72,22 +71,25 @@ const StudyReasonsEditor = () => {
 
   const onSubmit = async (values: FormValues) => {
     // In a real implementation, you would handle icon selection properly
-    // This is just a mock implementation
-    const iconName = values.icon;
+    // This is just a mock implementation using the first icon from studyReasons as a placeholder
     
     if (editingReason) {
-      // Update existing reason
+      // Update existing reason - ensure we maintain the required properties
       const updatedReasons = reasons.map(reason => 
         reason === editingReason 
-          ? { ...values, icon: editingReason.icon } 
+          ? { 
+              ...reason,
+              title: values.title, 
+              description: values.description 
+            } 
           : reason
       );
       setReasons(updatedReasons);
     } else {
-      // Add new reason
-      // In a real app, you would need to handle the icon import dynamically
-      const newReason = { 
-        ...values, 
+      // Add new reason - ensure we create a proper StudyReason object with all required properties
+      const newReason: StudyReason = { 
+        title: values.title, 
+        description: values.description, 
         icon: studyReasons[0].icon // Just using the first icon as a placeholder
       };
       setReasons([...reasons, newReason]);

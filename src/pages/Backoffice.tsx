@@ -25,6 +25,7 @@ import {
   LogOut 
 } from 'lucide-react';
 import Dashboard from '@/components/backoffice/Dashboard';
+import StudyReasonsEditor from '@/components/backoffice/StudyReasonsEditor';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -58,7 +59,7 @@ const Backoffice = () => {
       case 'stats':
         return <div className="p-6">Gerenciamento de Estatísticas</div>;
       case 'study-reasons':
-        return <div className="p-6">Gerenciamento de Razões para Estudar</div>;
+        return <StudyReasonsEditor />;
       case 'faq':
         return <div className="p-6">Gerenciamento de FAQ</div>;
       default:
