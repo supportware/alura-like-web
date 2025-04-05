@@ -54,6 +54,7 @@ const FAQEditor = () => {
     setLoading(true);
     try {
       const data = await fetchFAQs();
+      console.log('FAQs loaded in editor:', data);
       setFaqs(data);
     } catch (error) {
       console.error('Error loading FAQs:', error);

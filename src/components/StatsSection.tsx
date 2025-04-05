@@ -22,6 +22,7 @@ const StatsSection = () => {
     const loadStats = async () => {
       try {
         const data = await fetchStats();
+        console.log('Stats loaded:', data);
         setStats(data);
         setError(null);
       } catch (err) {

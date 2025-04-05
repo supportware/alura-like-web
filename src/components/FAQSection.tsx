@@ -18,6 +18,7 @@ const FAQSection = () => {
     const loadFAQs = async () => {
       try {
         const data = await fetchFAQs();
+        console.log('FAQs loaded:', data);
         setFaqs(data);
         setError(null);
       } catch (err) {

@@ -14,8 +14,7 @@ import {
   DialogDescription, 
   DialogFooter, 
   DialogHeader, 
-  DialogTitle, 
-  DialogTrigger 
+  DialogTitle
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -92,6 +91,7 @@ const StatsEditor = () => {
     setLoading(true);
     try {
       const data = await fetchStats();
+      console.log('Stats loaded in editor:', data);
       setStats(data);
     } catch (error) {
       console.error('Error loading stats:', error);
