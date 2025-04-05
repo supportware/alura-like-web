@@ -25,14 +25,26 @@ import { Label } from '@/components/ui/label';
 import { FAQ, fetchFAQs, createFAQ, updateFAQ, deleteFAQ } from '@/services/supabase';
 import { PlusCircle, Edit, Trash2, Loader2 } from 'lucide-react';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const FAQEditor = () => {
   const { toast } = useToast();
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [currentFAQ, setCurrentFAQ] = useState<Partial<FAQ>>({ question: '', answer: '' });
   const [isEditing, setIsEditing] = useState(false);
+  const [faqToDelete, setFaqToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     loadFAQs();
@@ -112,26 +124,33 @@ const FAQEditor = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (confirm('Tem certeza que deseja excluir esta FAQ?')) {
-      setLoading(true);
-      try {
-        await deleteFAQ(id);
-        toast({
-          title: 'Sucesso',
-          description: 'FAQ excluída com sucesso!',
-        });
-        loadFAQs();
-      } catch (error) {
-        console.error('Error deleting FAQ:', error);
-        toast({
-          title: 'Erro',
-          description: 'Não foi possível excluir o FAQ.',
-          variant: 'destructive',
-        });
-      } finally {
-        setLoading(false);
-      }
+  const confirmDelete = (id: string) => {
+    setFaqToDelete(id);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!faqToDelete) return;
+    
+    setLoading(true);
+    try {
+      await deleteFAQ(faqToDelete);
+      toast({
+        title: 'Sucesso',
+        description: 'FAQ excluída com sucesso!',
+      });
+      loadFAQs();
+      setIsDeleteDialogOpen(false);
+      setFaqToDelete(null);
+    } catch (error) {
+      console.error('Error deleting FAQ:', error);
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível excluir o FAQ.',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -182,7 +201,7 @@ const FAQEditor = () => {
                         <Button 
                           variant="outline" 
                           size="icon"
-                          onClick={() => handleDelete(faq.id)}
+                          onClick={() => confirmDelete(faq.id)}
                         >
                           <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
@@ -242,6 +261,24 @@ const FAQEditor = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir esta FAQ? Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground">
+              {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

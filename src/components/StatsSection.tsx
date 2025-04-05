@@ -6,6 +6,7 @@ import { fetchStats, Stat } from '@/services/supabase';
 const StatsSection = () => {
   const [stats, setStats] = useState<Stat[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Map icon strings to components
   const iconMap: Record<string, React.FC<any>> = {
@@ -22,8 +23,10 @@ const StatsSection = () => {
       try {
         const data = await fetchStats();
         setStats(data);
-      } catch (error) {
-        console.error('Error loading stats:', error);
+        setError(null);
+      } catch (err) {
+        console.error('Error loading stats:', err);
+        setError('Não foi possível carregar as estatísticas. Tente novamente mais tarde.');
       } finally {
         setLoading(false);
       }
@@ -95,6 +98,10 @@ const StatsSection = () => {
         {loading ? (
           <div className="flex justify-center items-center h-40">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : error ? (
+          <div className="text-center p-6 text-red-500">
+            <p>{error}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">

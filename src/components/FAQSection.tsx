@@ -12,14 +12,17 @@ import { Loader2 } from 'lucide-react';
 const FAQSection = () => {
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadFAQs = async () => {
       try {
         const data = await fetchFAQs();
         setFaqs(data);
-      } catch (error) {
-        console.error('Error loading FAQs:', error);
+        setError(null);
+      } catch (err) {
+        console.error('Error loading FAQs:', err);
+        setError('Não foi possível carregar as perguntas frequentes. Tente novamente mais tarde.');
       } finally {
         setLoading(false);
       }
@@ -66,6 +69,10 @@ const FAQSection = () => {
           {loading ? (
             <div className="flex justify-center items-center h-40">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : error ? (
+            <div className="text-center p-6 text-red-500">
+              <p>{error}</p>
             </div>
           ) : (
             <Accordion type="single" collapsible className="w-full">

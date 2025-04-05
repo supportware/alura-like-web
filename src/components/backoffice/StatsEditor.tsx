@@ -34,18 +34,30 @@ import {
   BookOpen, Users, ThumbsUp, Trophy, GraduationCap, Award, 
   Briefcase, Heart, Clock, Star, Globe, Code, Laptop
 } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const StatsEditor = () => {
   const { toast } = useToast();
   const [stats, setStats] = useState<Stat[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [currentStat, setCurrentStat] = useState<Partial<Stat>>({
     title: '',
     value: '',
     icon: 'BookOpen',
   });
   const [isEditing, setIsEditing] = useState(false);
+  const [statToDelete, setStatToDelete] = useState<string | null>(null);
 
   const iconOptions = [
     { value: 'BookOpen', label: 'Livro', icon: BookOpen },
@@ -156,26 +168,33 @@ const StatsEditor = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (confirm('Tem certeza que deseja excluir esta estatística?')) {
-      setLoading(true);
-      try {
-        await deleteStat(id);
-        toast({
-          title: 'Sucesso',
-          description: 'Estatística excluída com sucesso!',
-        });
-        loadStats();
-      } catch (error) {
-        console.error('Error deleting stat:', error);
-        toast({
-          title: 'Erro',
-          description: 'Não foi possível excluir a estatística.',
-          variant: 'destructive',
-        });
-      } finally {
-        setLoading(false);
-      }
+  const confirmDelete = (id: string) => {
+    setStatToDelete(id);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!statToDelete) return;
+    
+    setLoading(true);
+    try {
+      await deleteStat(statToDelete);
+      toast({
+        title: 'Sucesso',
+        description: 'Estatística excluída com sucesso!',
+      });
+      loadStats();
+      setIsDeleteDialogOpen(false);
+      setStatToDelete(null);
+    } catch (error) {
+      console.error('Error deleting stat:', error);
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível excluir a estatística.',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -232,7 +251,7 @@ const StatsEditor = () => {
                         <Button 
                           variant="outline" 
                           size="icon"
-                          onClick={() => handleDelete(stat.id)}
+                          onClick={() => confirmDelete(stat.id)}
                         >
                           <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
@@ -312,6 +331,24 @@ const StatsEditor = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir esta estatística? Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground">
+              {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
