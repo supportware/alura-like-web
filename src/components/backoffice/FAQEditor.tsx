@@ -5,35 +5,15 @@ import {
   Card, 
   CardContent, 
   CardDescription, 
-  CardFooter, 
   CardHeader, 
   CardTitle 
 } from '@/components/ui/card';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogFooter, 
-  DialogHeader, 
-  DialogTitle
-} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
 import { FAQ, fetchFAQs, createFAQ, updateFAQ, deleteFAQ } from '@/services/supabase';
-import { PlusCircle, Edit, Trash2, Loader2 } from 'lucide-react';
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { PlusCircle } from 'lucide-react';
+import FAQForm from './faq/FAQForm';
+import FAQList from './faq/FAQList';
+import DeleteFAQDialog from './faq/DeleteFAQDialog';
 
 const FAQEditor = () => {
   const { toast } = useToast();
@@ -80,16 +60,11 @@ const FAQEditor = () => {
     setIsDialogOpen(true);
   };
 
-  const handleSave = async () => {
-    if (!currentFAQ.question || !currentFAQ.answer) {
-      toast({
-        title: 'Campos obrigatórios',
-        description: 'Preencha todos os campos obrigatórios.',
-        variant: 'destructive',
-      });
-      return;
-    }
+  const handleUpdateField = (field: string, value: string) => {
+    setCurrentFAQ((prev) => ({ ...prev, [field]: value }));
+  };
 
+  const handleSave = async () => {
     setIsSubmitting(true);
     try {
       if (isEditing && currentFAQ.id) {
@@ -172,114 +147,31 @@ const FAQEditor = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {loading ? (
-            <div className="flex justify-center items-center h-40">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-          ) : faqs.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Pergunta</TableHead>
-                  <TableHead>Resposta</TableHead>
-                  <TableHead className="w-[100px]">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {faqs.map((faq) => (
-                  <TableRow key={faq.id}>
-                    <TableCell className="font-medium">{faq.question}</TableCell>
-                    <TableCell className="max-w-md truncate">{faq.answer}</TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button 
-                          variant="outline" 
-                          size="icon" 
-                          onClick={() => handleEditClick(faq)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="icon"
-                          onClick={() => confirmDelete(faq.id)}
-                        >
-                          <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ) : (
-            <div className="text-center p-6 text-muted-foreground">
-              Nenhum FAQ cadastrado. Clique em "Adicionar Nova" para começar.
-            </div>
-          )}
+          <FAQList 
+            faqs={faqs} 
+            loading={loading} 
+            onEdit={handleEditClick} 
+            onDelete={confirmDelete} 
+          />
         </CardContent>
       </Card>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{isEditing ? 'Editar FAQ' : 'Nova Pergunta Frequente'}</DialogTitle>
-            <DialogDescription>
-              {isEditing
-                ? 'Edite os detalhes da pergunta frequente.'
-                : 'Adicione uma nova pergunta frequente ao site.'}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="question">Pergunta *</Label>
-              <Input
-                id="question"
-                value={currentFAQ.question || ''}
-                onChange={(e) => setCurrentFAQ({ ...currentFAQ, question: e.target.value })}
-                placeholder="Digite a pergunta"
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="answer">Resposta *</Label>
-              <Textarea
-                id="answer"
-                value={currentFAQ.answer || ''}
-                onChange={(e) => setCurrentFAQ({ ...currentFAQ, answer: e.target.value })}
-                placeholder="Digite a resposta"
-                rows={5}
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-              Cancelar
-            </Button>
-            <Button onClick={handleSave} disabled={isSubmitting}>
-              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isEditing ? 'Atualizar' : 'Adicionar'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <FAQForm 
+        isOpen={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        currentFAQ={currentFAQ}
+        isEditing={isEditing}
+        isSubmitting={isSubmitting}
+        onSave={handleSave}
+        onUpdateField={handleUpdateField}
+      />
 
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
-            <AlertDialogDescription>
-              Tem certeza que deseja excluir esta FAQ? Esta ação não pode ser desfeita.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground">
-              {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-              Excluir
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteFAQDialog 
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        isSubmitting={isSubmitting}
+        onDelete={handleDelete}
+      />
     </div>
   );
 };
