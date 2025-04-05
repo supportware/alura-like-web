@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { BookOpen, Users, ThumbsUp, Trophy, GraduationCap, Award, Loader2 } from 'lucide-react';
+import { BookOpen, Users, ThumbsUp, Trophy, GraduationCap, Award, Briefcase, Heart, Clock, Star, Globe, Code, Laptop, Loader2 } from 'lucide-react';
 import { fetchStats, Stat } from '@/services/supabase';
 
 const StatsSection = () => {
@@ -10,12 +10,19 @@ const StatsSection = () => {
 
   // Map icon strings to components
   const iconMap: Record<string, React.FC<any>> = {
-    BookOpen: BookOpen,
-    Users: Users,
-    ThumbsUp: ThumbsUp,
-    Trophy: Trophy,
-    GraduationCap: GraduationCap,
-    Award: Award,
+    BookOpen,
+    Users,
+    ThumbsUp,
+    Trophy,
+    GraduationCap,
+    Award,
+    Briefcase,
+    Heart,
+    Clock,
+    Star,
+    Globe,
+    Code,
+    Laptop
   };
 
   useEffect(() => {

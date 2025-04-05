@@ -8,41 +8,12 @@ import {
   CardHeader, 
   CardTitle 
 } from '@/components/ui/card';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogFooter, 
-  DialogHeader, 
-  DialogTitle
-} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Stat, fetchStats, createStat, updateStat, deleteStat } from '@/services/supabase';
-import { PlusCircle, Edit, Trash2, Loader2 } from 'lucide-react';
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { 
-  BookOpen, Users, ThumbsUp, Trophy, GraduationCap, Award, 
-  Briefcase, Heart, Clock, Star, Globe, Code, Laptop
-} from 'lucide-react';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { PlusCircle } from 'lucide-react';
+import StatsList from './stats/StatsList';
+import StatForm from './stats/StatForm';
+import DeleteStatDialog from './stats/DeleteStatDialog';
 
 const StatsEditor = () => {
   const { toast } = useToast();
@@ -58,31 +29,6 @@ const StatsEditor = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [statToDelete, setStatToDelete] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const iconOptions = [
-    { value: 'BookOpen', label: 'Livro', icon: BookOpen },
-    { value: 'Users', label: 'Usuários', icon: Users },
-    { value: 'ThumbsUp', label: 'Like', icon: ThumbsUp },
-    { value: 'Trophy', label: 'Troféu', icon: Trophy },
-    { value: 'GraduationCap', label: 'Formatura', icon: GraduationCap },
-    { value: 'Award', label: 'Prêmio', icon: Award },
-    { value: 'Briefcase', label: 'Trabalho', icon: Briefcase },
-    { value: 'Heart', label: 'Coração', icon: Heart },
-    { value: 'Clock', label: 'Relógio', icon: Clock },
-    { value: 'Star', label: 'Estrela', icon: Star },
-    { value: 'Globe', label: 'Globo', icon: Globe },
-    { value: 'Code', label: 'Código', icon: Code },
-    { value: 'Laptop', label: 'Laptop', icon: Laptop },
-  ];
-
-  const getIconComponent = (iconName: string) => {
-    const icon = iconOptions.find(i => i.value === iconName);
-    if (icon) {
-      const IconComponent = icon.icon;
-      return <IconComponent className="h-4 w-4" />;
-    }
-    return <BookOpen className="h-4 w-4" />;
-  };
 
   useEffect(() => {
     loadStats();
@@ -216,140 +162,31 @@ const StatsEditor = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {loading ? (
-            <div className="flex justify-center items-center h-40">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-          ) : stats.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Ícone</TableHead>
-                  <TableHead>Título</TableHead>
-                  <TableHead>Valor</TableHead>
-                  <TableHead className="w-[100px]">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {stats.map((stat) => (
-                  <TableRow key={stat.id}>
-                    <TableCell>
-                      <div className="p-2 bg-primary/10 rounded-full w-10 h-10 flex items-center justify-center text-primary">
-                        {getIconComponent(stat.icon)}
-                      </div>
-                    </TableCell>
-                    <TableCell className="font-medium">{stat.title}</TableCell>
-                    <TableCell>{stat.value}</TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button 
-                          variant="outline" 
-                          size="icon" 
-                          onClick={() => handleEditClick(stat)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="icon"
-                          onClick={() => confirmDelete(stat.id)}
-                        >
-                          <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ) : (
-            <div className="text-center p-6 text-muted-foreground">
-              Nenhuma estatística cadastrada. Clique em "Adicionar Nova" para começar.
-            </div>
-          )}
+          <StatsList 
+            stats={stats} 
+            loading={loading} 
+            onEditClick={handleEditClick} 
+            onDeleteClick={confirmDelete} 
+          />
         </CardContent>
       </Card>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{isEditing ? 'Editar Estatística' : 'Nova Estatística'}</DialogTitle>
-            <DialogDescription>
-              {isEditing
-                ? 'Edite os detalhes da estatística.'
-                : 'Adicione uma nova estatística ao site.'}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="title">Título *</Label>
-              <Input
-                id="title"
-                value={currentStat.title || ''}
-                onChange={(e) => setCurrentStat({ ...currentStat, title: e.target.value })}
-                placeholder="Ex: Cursos"
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="value">Valor *</Label>
-              <Input
-                id="value"
-                value={currentStat.value || ''}
-                onChange={(e) => setCurrentStat({ ...currentStat, value: e.target.value })}
-                placeholder="Ex: 1.500+"
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="icon">Ícone *</Label>
-              <Select
-                value={currentStat.icon}
-                onValueChange={(value) => setCurrentStat({ ...currentStat, icon: value })}
-              >
-                <SelectTrigger id="icon">
-                  <SelectValue placeholder="Selecione um ícone" />
-                </SelectTrigger>
-                <SelectContent>
-                  {iconOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      <div className="flex items-center gap-2">
-                        {option.icon && <option.icon className="h-4 w-4" />}
-                        <span>{option.label}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-              Cancelar
-            </Button>
-            <Button onClick={handleSave} disabled={isSubmitting}>
-              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isEditing ? 'Atualizar' : 'Adicionar'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <StatForm 
+        isOpen={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        currentStat={currentStat}
+        setCurrentStat={setCurrentStat}
+        isEditing={isEditing}
+        isSubmitting={isSubmitting}
+        onSave={handleSave}
+      />
 
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
-            <AlertDialogDescription>
-              Tem certeza que deseja excluir esta estatística? Esta ação não pode ser desfeita.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground">
-              {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-              Excluir
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteStatDialog 
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        isSubmitting={isSubmitting}
+        onDelete={handleDelete}
+      />
     </div>
   );
 };
