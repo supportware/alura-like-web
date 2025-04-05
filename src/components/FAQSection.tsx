@@ -16,6 +16,7 @@ const FAQSection = () => {
 
   useEffect(() => {
     const loadFAQs = async () => {
+      setLoading(true);
       try {
         const data = await fetchFAQs();
         console.log('FAQs loaded:', data);

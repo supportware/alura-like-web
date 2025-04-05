@@ -15,8 +15,7 @@ import {
   DialogDescription, 
   DialogFooter, 
   DialogHeader, 
-  DialogTitle, 
-  DialogTrigger 
+  DialogTitle
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -45,6 +44,7 @@ const FAQEditor = () => {
   const [currentFAQ, setCurrentFAQ] = useState<Partial<FAQ>>({ question: '', answer: '' });
   const [isEditing, setIsEditing] = useState(false);
   const [faqToDelete, setFaqToDelete] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     loadFAQs();
@@ -90,7 +90,7 @@ const FAQEditor = () => {
       return;
     }
 
-    setLoading(true);
+    setIsSubmitting(true);
     try {
       if (isEditing && currentFAQ.id) {
         await updateFAQ(currentFAQ.id, {
@@ -121,7 +121,7 @@ const FAQEditor = () => {
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -133,7 +133,7 @@ const FAQEditor = () => {
   const handleDelete = async () => {
     if (!faqToDelete) return;
     
-    setLoading(true);
+    setIsSubmitting(true);
     try {
       await deleteFAQ(faqToDelete);
       toast({
@@ -151,7 +151,7 @@ const FAQEditor = () => {
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -172,7 +172,7 @@ const FAQEditor = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {loading && faqs.length === 0 ? (
+          {loading ? (
             <div className="flex justify-center items-center h-40">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
@@ -255,8 +255,8 @@ const FAQEditor = () => {
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
               Cancelar
             </Button>
-            <Button onClick={handleSave} disabled={loading}>
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            <Button onClick={handleSave} disabled={isSubmitting}>
+              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {isEditing ? 'Atualizar' : 'Adicionar'}
             </Button>
           </DialogFooter>
@@ -274,7 +274,7 @@ const FAQEditor = () => {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground">
-              {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+              {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
               Excluir
             </AlertDialogAction>
           </AlertDialogFooter>

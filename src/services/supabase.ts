@@ -162,16 +162,22 @@ export const fetchCourses = async (): Promise<Course[]> => {
 
 // FAQ functions
 export const fetchFAQs = async (): Promise<FAQ[]> => {
-  const { data, error } = await supabase
-    .from('faqs')
-    .select('*');
+  try {
+    const { data, error } = await supabase
+      .from('faqs')
+      .select('*')
+      .order('created_at', { ascending: false });
 
-  if (error) {
-    console.error('Error fetching FAQs:', error);
+    if (error) {
+      console.error('Error fetching FAQs:', error);
+      return [];
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error('Unexpected error fetching FAQs:', error);
     return [];
   }
-
-  return data || [];
 };
 
 export const createFAQ = async (newFAQ: Omit<FAQ, 'id' | 'created_at' | 'updated_at'>): Promise<FAQ | null> => {
@@ -280,16 +286,22 @@ export const deleteTestimonial = async (id: string): Promise<boolean> => {
 
 // Stats functions
 export const fetchStats = async (): Promise<Stat[]> => {
-  const { data, error } = await supabase
-    .from('stats')
-    .select('*');
+  try {
+    const { data, error } = await supabase
+      .from('stats')
+      .select('*')
+      .order('created_at', { ascending: false });
 
-  if (error) {
-    console.error('Error fetching stats:', error);
+    if (error) {
+      console.error('Error fetching stats:', error);
+      return [];
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error('Unexpected error fetching stats:', error);
     return [];
   }
-
-  return data || [];
 };
 
 export const createStat = async (newStat: Omit<Stat, 'id' | 'created_at' | 'updated_at'>): Promise<Stat | null> => {

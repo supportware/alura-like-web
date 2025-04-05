@@ -20,6 +20,7 @@ const StatsSection = () => {
 
   useEffect(() => {
     const loadStats = async () => {
+      setLoading(true);
       try {
         const data = await fetchStats();
         console.log('Stats loaded:', data);

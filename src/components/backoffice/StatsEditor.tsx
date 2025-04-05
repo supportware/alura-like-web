@@ -57,6 +57,7 @@ const StatsEditor = () => {
   });
   const [isEditing, setIsEditing] = useState(false);
   const [statToDelete, setStatToDelete] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const iconOptions = [
     { value: 'BookOpen', label: 'Livro', icon: BookOpen },
@@ -78,9 +79,9 @@ const StatsEditor = () => {
     const icon = iconOptions.find(i => i.value === iconName);
     if (icon) {
       const IconComponent = icon.icon;
-      return <IconComponent />;
+      return <IconComponent className="h-4 w-4" />;
     }
-    return <BookOpen />;
+    return <BookOpen className="h-4 w-4" />;
   };
 
   useEffect(() => {
@@ -131,7 +132,7 @@ const StatsEditor = () => {
       return;
     }
 
-    setLoading(true);
+    setIsSubmitting(true);
     try {
       if (isEditing && currentStat.id) {
         await updateStat(currentStat.id, {
@@ -164,7 +165,7 @@ const StatsEditor = () => {
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -176,7 +177,7 @@ const StatsEditor = () => {
   const handleDelete = async () => {
     if (!statToDelete) return;
     
-    setLoading(true);
+    setIsSubmitting(true);
     try {
       await deleteStat(statToDelete);
       toast({
@@ -194,7 +195,7 @@ const StatsEditor = () => {
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -215,7 +216,7 @@ const StatsEditor = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {loading && stats.length === 0 ? (
+          {loading ? (
             <div className="flex justify-center items-center h-40">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
@@ -304,14 +305,14 @@ const StatsEditor = () => {
                 value={currentStat.icon}
                 onValueChange={(value) => setCurrentStat({ ...currentStat, icon: value })}
               >
-                <SelectTrigger>
+                <SelectTrigger id="icon">
                   <SelectValue placeholder="Selecione um ícone" />
                 </SelectTrigger>
                 <SelectContent>
                   {iconOptions.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       <div className="flex items-center gap-2">
-                        <option.icon className="h-4 w-4" />
+                        {option.icon && <option.icon className="h-4 w-4" />}
                         <span>{option.label}</span>
                       </div>
                     </SelectItem>
@@ -324,8 +325,8 @@ const StatsEditor = () => {
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
               Cancelar
             </Button>
-            <Button onClick={handleSave} disabled={loading}>
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            <Button onClick={handleSave} disabled={isSubmitting}>
+              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {isEditing ? 'Atualizar' : 'Adicionar'}
             </Button>
           </DialogFooter>
@@ -343,7 +344,7 @@ const StatsEditor = () => {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground">
-              {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+              {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
               Excluir
             </AlertDialogAction>
           </AlertDialogFooter>
