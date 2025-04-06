@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS public.faqs (
 
 -- Inserir alguns dados iniciais de FAQ
 INSERT INTO public.faqs (question, answer) VALUES 
-('Como funciona o método de ensino da Alura?', 'Nosso método de ensino é baseado em cursos práticos e projetos reais, com suporte de instrutores experientes e comunidade ativa.'),
+('Como funciona o método de ensino da Excel?', 'Nosso método de ensino é baseado em cursos práticos e projetos reais, com suporte de instrutores experientes e comunidade ativa.'),
 ('Quais são as formas de pagamento?', 'Aceitamos cartões de crédito, boleto bancário e PIX. Oferecemos pagamentos mensais ou anuais com desconto.'),
 ('Os certificados são reconhecidos pelo mercado?', 'Sim, nossos certificados são amplamente reconhecidos no mercado de tecnologia e validam suas habilidades em projetos reais.'),
 ('Posso acessar o conteúdo offline?', 'Sim, nosso aplicativo permite que você baixe aulas para assistir offline, facilitando o aprendizado mesmo sem internet.'),

@@ -46,7 +46,7 @@ export default function VerifyEmail() {
           </Button>
           <div className="text-center text-sm">
             Não recebeu o email?{" "}
-            <button className="text-alura-blue hover:underline font-semibold">
+            <button className="text-Excel-blue hover:underline font-semibold">
               Reenviar email
             </button>
           </div>

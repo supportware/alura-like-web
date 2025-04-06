@@ -38,17 +38,17 @@ const WhyStudyWithUsSection = () => {
   return (
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-8 text-alura-black">
+        <h2 className="text-3xl font-bold text-center mb-8 text-Excel-black">
           Por que estudar conosco
         </h2>
-        <p className="text-alura-darkgray text-lg text-center max-w-3xl mx-auto mb-12">
-          Descubra como a Alura pode ajudar você a alcançar seus objetivos 
+        <p className="text-Excel-darkgray text-lg text-center max-w-3xl mx-auto mb-12">
+          Descubra como a Excel pode ajudar você a alcançar seus objetivos 
           de carreira e desenvolvimento profissional
         </p>
         
         {loading ? (
           <div className="flex justify-center items-center h-48">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-alura-blue"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-Excel-blue"></div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

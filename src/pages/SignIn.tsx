@@ -101,13 +101,13 @@ export default function SignIn() {
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
           <div className="text-center text-sm">
-            <Link to="/forgot-password" className="text-alura-blue hover:underline">
+            <Link to="/forgot-password" className="text-Excel-blue hover:underline">
               Esqueceu sua senha?
             </Link>
           </div>
           <div className="text-center text-sm">
             Não tem uma conta?{" "}
-            <Link to="/sign-up" className="text-alura-blue hover:underline">
+            <Link to="/sign-up" className="text-Excel-blue hover:underline">
               Cadastre-se
             </Link>
           </div>

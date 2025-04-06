@@ -132,9 +132,9 @@ const Courses = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow">
-        <section className="bg-alura-gray py-12">
+        <section className="bg-Excel-gray py-12">
           <div className="container mx-auto px-4">
-            <h1 className="text-3xl md:text-4xl font-bold mb-8 text-alura-black">Todos os cursos</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-8 text-Excel-black">Todos os cursos</h1>
             
             <div className="flex flex-col lg:flex-row gap-8">
               {/* Filters sidebar */}
@@ -194,7 +194,7 @@ const Courses = () => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="flex-grow"
                   />
-                  <Button className="bg-alura-blue">
+                  <Button className="bg-Excel-blue">
                     <Search className="h-4 w-4 mr-2" />
                     Buscar
                   </Button>
@@ -216,9 +216,9 @@ const Courses = () => {
                             {course.category}
                           </Badge>
                           <h3 className="font-bold text-lg mb-2">{course.title}</h3>
-                          <p className="text-alura-darkgray text-sm">{course.instructor}</p>
+                          <p className="text-Excel-darkgray text-sm">{course.instructor}</p>
                         </CardContent>
-                        <CardFooter className="px-5 pb-5 pt-0 flex justify-between text-sm text-alura-darkgray">
+                        <CardFooter className="px-5 pb-5 pt-0 flex justify-between text-sm text-Excel-darkgray">
                           <span>{course.level}</span>
                           <span>{course.hours}h</span>
                         </CardFooter>
@@ -226,7 +226,7 @@ const Courses = () => {
                     ))
                   ) : (
                     <div className="col-span-full py-10 text-center">
-                      <p className="text-alura-darkgray text-lg">Nenhum curso encontrado com os filtros selecionados.</p>
+                      <p className="text-Excel-darkgray text-lg">Nenhum curso encontrado com os filtros selecionados.</p>
                     </div>
                   )}
                 </div>

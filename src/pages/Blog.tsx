@@ -79,9 +79,9 @@ const Blog = () => {
       <Navbar />
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="bg-alura-blue text-white py-20">
+        <section className="bg-Excel-blue text-white py-20">
           <div className="container mx-auto px-4 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Blog da Alura</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">Blog da Excel</h1>
             <p className="text-xl md:text-2xl max-w-3xl mx-auto">
               Artigos, tutoriais e novidades do mundo da tecnologia e educação
             </p>
@@ -89,12 +89,12 @@ const Blog = () => {
         </section>
         
         {/* Search and Categories */}
-        <section className="py-10 bg-alura-gray">
+        <section className="py-10 bg-Excel-gray">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row gap-4 items-center justify-between mb-8">
               <div className="flex items-center gap-2 w-full md:w-auto">
                 <Input placeholder="Buscar no blog..." className="max-w-md" />
-                <Button className="bg-alura-blue">
+                <Button className="bg-Excel-blue">
                   <Search className="h-4 w-4" />
                 </Button>
               </div>
@@ -121,15 +121,15 @@ const Blog = () => {
                 <CardContent className="md:w-1/2 p-8">
                   <Badge className="mb-4">{blogPosts[0].category}</Badge>
                   <h2 className="text-2xl font-bold mb-3">{blogPosts[0].title}</h2>
-                  <p className="text-alura-darkgray mb-4">{blogPosts[0].excerpt}</p>
-                  <div className="flex items-center justify-between text-sm text-alura-darkgray">
+                  <p className="text-Excel-darkgray mb-4">{blogPosts[0].excerpt}</p>
+                  <div className="flex items-center justify-between text-sm text-Excel-darkgray">
                     <div>
                       <p>{blogPosts[0].author}</p>
                       <p>{blogPosts[0].date}</p>
                     </div>
                     <span>{blogPosts[0].readTime}</span>
                   </div>
-                  <Button className="mt-6 bg-alura-blue">Ler artigo</Button>
+                  <Button className="mt-6 bg-Excel-blue">Ler artigo</Button>
                 </CardContent>
               </div>
             </Card>
@@ -148,8 +148,8 @@ const Blog = () => {
                   <CardContent className="p-6">
                     <Badge className="mb-3">{post.category}</Badge>
                     <h3 className="text-xl font-bold mb-2">{post.title}</h3>
-                    <p className="text-alura-darkgray mb-4 line-clamp-2">{post.excerpt}</p>
-                    <div className="flex items-center justify-between text-sm text-alura-darkgray">
+                    <p className="text-Excel-darkgray mb-4 line-clamp-2">{post.excerpt}</p>
+                    <div className="flex items-center justify-between text-sm text-Excel-darkgray">
                       <div>
                         <p>{post.author}</p>
                         <p>{post.date}</p>

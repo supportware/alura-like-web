@@ -5,8 +5,8 @@ import { Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react";
 const Footer = () => {
   const footerLinks = [
     {
-      title: 'A Alura',
-      links: ['Sobre a Alura', 'Carreiras', 'Imprensa', 'Blog', 'Parceiros']
+      title: 'A Excel',
+      links: ['Sobre a Excel', 'Carreiras', 'Imprensa', 'Blog', 'Parceiros']
     },
     {
       title: 'Cursos',
@@ -31,11 +31,11 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-alura-darkblue text-white">
+    <footer className="bg-Excel-darkblue text-white">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           <div>
-            <h3 className="text-2xl font-bold mb-6">Alura</h3>
+            <h3 className="text-2xl font-bold mb-6">Excel</h3>
             <p className="text-gray-300 mb-6">
               Uma plataforma completa de cursos online para você desenvolver suas habilidades em tecnologia.
             </p>
@@ -70,7 +70,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-gray-700 mt-12 pt-8 text-center text-gray-300 text-sm">
-          <p>© {new Date().getFullYear()} Alura. Todos os direitos reservados.</p>
+          <p>© {new Date().getFullYear()} Excel. Todos os direitos reservados.</p>
           <div className="mt-4 space-x-4">
             <a href="#" className="hover:text-white transition-colors">Termos de Uso</a>
             <a href="#" className="hover:text-white transition-colors">Política de Privacidade</a>

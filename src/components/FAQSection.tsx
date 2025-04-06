@@ -37,8 +37,8 @@ const FAQSection = () => {
   const defaultFaqs = [
     {
       id: '1',
-      question: "Como funcionam os cursos da Alura?",
-      answer: "Os cursos da Alura são 100% online e você pode assistir quantas vezes quiser, quando e onde quiser. Após se matricular, você tem acesso a todas as aulas, exercícios e projetos práticos.",
+      question: "Como funcionam os cursos da Excel?",
+      answer: "Os cursos da Excel são 100% online e você pode assistir quantas vezes quiser, quando e onde quiser. Após se matricular, você tem acesso a todas as aulas, exercícios e projetos práticos.",
       display_order: 1,
       created_at: '',
       updated_at: ''
@@ -54,7 +54,7 @@ const FAQSection = () => {
     {
       id: '3',
       question: "Os certificados são reconhecidos pelo mercado?",
-      answer: "Sim, os certificados da Alura são reconhecidos pelo mercado de trabalho. Eles comprovam as habilidades e conhecimentos adquiridos, sendo um diferencial para o seu currículo.",
+      answer: "Sim, os certificados da Excel são reconhecidos pelo mercado de trabalho. Eles comprovam as habilidades e conhecimentos adquiridos, sendo um diferencial para o seu currículo.",
       display_order: 3,
       created_at: '',
       updated_at: ''
@@ -65,9 +65,9 @@ const FAQSection = () => {
   const displayFaqs = faqs.length > 0 ? [...faqs].sort((a, b) => (a.display_order || 0) - (b.display_order || 0)) : defaultFaqs;
 
   return (
-    <section className="py-16 bg-alura-gray">
+    <section className="py-16 bg-Excel-gray">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-12 text-alura-black">
+        <h2 className="text-3xl font-bold text-center mb-12 text-Excel-black">
           Perguntas Frequentes
         </h2>
         
@@ -87,7 +87,7 @@ const FAQSection = () => {
                   <AccordionTrigger className="text-lg font-medium text-left py-4">
                     {faq.question}
                   </AccordionTrigger>
-                  <AccordionContent className="text-alura-darkgray">
+                  <AccordionContent className="text-Excel-darkgray">
                     {faq.answer}
                   </AccordionContent>
                 </AccordionItem>

@@ -99,9 +99,9 @@
 }
 
 .category-card {
-  @apply transition-all duration-300 hover:bg-alura-gray hover:shadow-md;
+  @apply transition-all duration-300 hover:bg-Excel-gray hover:shadow-md;
 }
 
 .hero-gradient {
-  @apply bg-gradient-to-r from-alura-blue to-blue-600;
+  @apply bg-gradient-to-r from-Excel-blue to-blue-600;
 }

@@ -101,8 +101,8 @@ const FAQEditor = () => {
   // FAQs padrão para importar quando o banco estiver vazio
   const defaultFaqs = [
     {
-      question: "Como funcionam os cursos da Alura?",
-      answer: "Os cursos da Alura são 100% online e você pode assistir quantas vezes quiser, quando e onde quiser. Após se matricular, você tem acesso a todas as aulas, exercícios e projetos práticos.",
+      question: "Como funcionam os cursos da Excel?",
+      answer: "Os cursos da Excel são 100% online e você pode assistir quantas vezes quiser, quando e onde quiser. Após se matricular, você tem acesso a todas as aulas, exercícios e projetos práticos.",
     },
     {
       question: "Quanto tempo tenho para concluir um curso?",
@@ -110,7 +110,7 @@ const FAQEditor = () => {
     },
     {
       question: "Os certificados são reconhecidos pelo mercado?",
-      answer: "Sim, os certificados da Alura são reconhecidos pelo mercado de trabalho. Eles comprovam as habilidades e conhecimentos adquiridos, sendo um diferencial para o seu currículo.",
+      answer: "Sim, os certificados da Excel são reconhecidos pelo mercado de trabalho. Eles comprovam as habilidades e conhecimentos adquiridos, sendo um diferencial para o seu currículo.",
     }
   ];
 

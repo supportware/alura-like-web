@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS public.stats (
 
 -- Inserir alguns dados iniciais de FAQ (opcional)
 INSERT INTO public.faqs (question, answer) VALUES 
-('Como funciona o método de ensino da Alura?', 'Nosso método de ensino é baseado em cursos práticos e projetos reais, com suporte de instrutores experientes e comunidade ativa.'),
+('Como funciona o método de ensino da Excel?', 'Nosso método de ensino é baseado em cursos práticos e projetos reais, com suporte de instrutores experientes e comunidade ativa.'),
 ('Quais são as formas de pagamento?', 'Aceitamos cartões de crédito, boleto bancário e PIX. Oferecemos pagamentos mensais ou anuais com desconto.');
 
 -- Inserir estatísticas iniciais (opcional)

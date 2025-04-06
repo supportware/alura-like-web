@@ -82,7 +82,7 @@ export default function ForgotPassword() {
         <CardFooter className="flex justify-center">
           <div className="text-center text-sm">
             Lembrou sua senha?{" "}
-            <Link to="/sign-in" className="text-alura-blue hover:underline">
+            <Link to="/sign-in" className="text-Excel-blue hover:underline">
               Voltar para o login
             </Link>
           </div>

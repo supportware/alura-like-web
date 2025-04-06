@@ -187,14 +187,14 @@ const CareerPathsSection = () => {
   return (
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-12 text-alura-black">
+        <h2 className="text-3xl font-bold text-center mb-12 text-Excel-black">
           Trilhas de Cursos por Carreira
         </h2>
         
         <div className="space-y-12">
           {careerPathCategories.map((category, catIndex) => (
             <div key={catIndex} className="mb-10">
-              <h3 className="text-2xl font-bold mb-6 text-alura-black">{category.category}</h3>
+              <h3 className="text-2xl font-bold mb-6 text-Excel-black">{category.category}</h3>
               
               <Carousel className="w-full">
                 <CarouselContent>
@@ -212,11 +212,11 @@ const CareerPathsSection = () => {
                           <div className="p-4">
                             <div className="flex items-start">
                               <div className={`${path.color} p-3 rounded-full mr-4`}>
-                                <path.icon className="h-6 w-6 text-alura-blue" />
+                                <path.icon className="h-6 w-6 text-Excel-blue" />
                               </div>
                               <div>
                                 <h3 className="font-bold text-lg">{path.title}</h3>
-                                <p className="text-alura-darkgray text-sm mt-1">Explore a trilha</p>
+                                <p className="text-Excel-darkgray text-sm mt-1">Explore a trilha</p>
                               </div>
                             </div>
                           </div>

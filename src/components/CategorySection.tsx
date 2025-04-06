@@ -46,7 +46,7 @@ const CategorySection = () => {
   return (
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-12 text-alura-black">
+        <h2 className="text-3xl font-bold text-center mb-12 text-Excel-black">
           Explore por área de conhecimento
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -54,11 +54,11 @@ const CategorySection = () => {
             <Card key={index} className="category-card border hover:cursor-pointer">
               <CardContent className="p-6 flex items-start">
                 <div className={`${category.color} p-3 rounded-full mr-4`}>
-                  <category.icon className="h-6 w-6 text-alura-blue" />
+                  <category.icon className="h-6 w-6 text-Excel-blue" />
                 </div>
                 <div>
                   <h3 className="font-bold text-lg mb-2">{category.title}</h3>
-                  <p className="text-alura-darkgray">{category.description}</p>
+                  <p className="text-Excel-darkgray">{category.description}</p>
                 </div>
               </CardContent>
             </Card>

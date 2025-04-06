@@ -28,16 +28,16 @@ const CoursesSection = () => {
   }, []);
 
   return (
-    <section className="py-16 bg-alura-gray">
+    <section className="py-16 bg-Excel-gray">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-10">
-          <h2 className="text-3xl font-bold text-alura-black">Cursos em destaque</h2>
-          <a href="/courses" className="text-alura-blue hover:underline">Ver todos os cursos</a>
+          <h2 className="text-3xl font-bold text-Excel-black">Cursos em destaque</h2>
+          <a href="/courses" className="text-Excel-blue hover:underline">Ver todos os cursos</a>
         </div>
         
         {loading ? (
           <div className="flex justify-center items-center h-64">
-            <Loader2 className="h-12 w-12 animate-spin text-alura-blue" />
+            <Loader2 className="h-12 w-12 animate-spin text-Excel-blue" />
           </div>
         ) : (
           <Carousel className="w-full">
@@ -57,9 +57,9 @@ const CoursesSection = () => {
                         {course.category}
                       </Badge>
                       <h3 className="font-bold text-lg mb-2">{course.title}</h3>
-                      <p className="text-alura-darkgray text-sm">{course.instructor}</p>
+                      <p className="text-Excel-darkgray text-sm">{course.instructor}</p>
                     </CardContent>
-                    <CardFooter className="px-5 pb-5 pt-0 flex justify-between text-sm text-alura-darkgray">
+                    <CardFooter className="px-5 pb-5 pt-0 flex justify-between text-sm text-Excel-darkgray">
                       <span>{course.level}</span>
                       <span>{course.hours}h</span>
                     </CardFooter>

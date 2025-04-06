@@ -74,7 +74,7 @@ const Backoffice = () => {
               <div className="p-2 rounded-md bg-primary text-primary-foreground">
                 <LayoutDashboard size={20} />
               </div>
-              <div className="font-semibold text-xl">Alura Admin</div>
+              <div className="font-semibold text-xl">Painel Administrativo</div>
             </div>
           </SidebarHeader>
           

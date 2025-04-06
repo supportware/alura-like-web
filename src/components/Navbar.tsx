@@ -23,42 +23,42 @@ const Navbar = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-            <Link to="/" className="text-2xl font-bold text-alura-blue">
+            <Link to="/" className="text-2xl font-bold text-Excel-blue">
               Excel
             </Link>
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
-            <Link to="/courses" className="text-alura-darkgray hover:text-alura-blue transition-colors">Cursos</Link>
-            <a href="#" className="text-alura-darkgray hover:text-alura-blue transition-colors">Formações</a>
-            <a href="#" className="text-alura-darkgray hover:text-alura-blue transition-colors">Para Empresas</a>
-            <Link to="/blog" className="text-alura-darkgray hover:text-alura-blue transition-colors">Blog</Link>
+            <Link to="/courses" className="text-Excel-darkgray hover:text-Excel-blue transition-colors">Cursos</Link>
+            <a href="#" className="text-Excel-darkgray hover:text-Excel-blue transition-colors">Formações</a>
+            <a href="#" className="text-Excel-darkgray hover:text-Excel-blue transition-colors">Para Empresas</a>
+            <Link to="/blog" className="text-Excel-darkgray hover:text-Excel-blue transition-colors">Blog</Link>
           </nav>
 
           {/* Search and Login Buttons */}
           <div className="hidden md:flex items-center space-x-4">
             <Button variant="ghost" size="icon">
-              <Search className="h-5 w-5 text-alura-darkgray" />
+              <Search className="h-5 w-5 text-Excel-darkgray" />
             </Button>
             
             {user ? (
               <div className="flex items-center space-x-4">
                 <Link to="/backoffice" className="flex items-center space-x-2">
-                  <div className="h-8 w-8 rounded-full bg-alura-blue flex items-center justify-center">
+                  <div className="h-8 w-8 rounded-full bg-Excel-blue flex items-center justify-center">
                     <Settings className="h-5 w-5 text-white" />
                   </div>
                   <span className="text-sm font-medium">Backoffice</span>
                 </Link>
                 <div className="flex items-center space-x-2">
-                  <div className="h-8 w-8 rounded-full bg-alura-blue flex items-center justify-center">
+                  <div className="h-8 w-8 rounded-full bg-Excel-blue flex items-center justify-center">
                     <User className="h-5 w-5 text-white" />
                   </div>
                   <span className="text-sm">{user.email}</span>
                 </div>
                 <Button 
                   variant="outline" 
-                  className="text-alura-blue border-alura-blue hover:bg-alura-blue hover:text-white"
+                  className="text-Excel-blue border-Excel-blue hover:bg-Excel-blue hover:text-white"
                   onClick={handleLogout}
                 >
                   Sair
@@ -67,12 +67,12 @@ const Navbar = () => {
             ) : (
               <>
                 <Link to="/sign-in">
-                  <Button variant="outline" className="text-alura-blue border-alura-blue hover:bg-alura-blue hover:text-white">
+                  <Button variant="outline" className="text-Excel-blue border-Excel-blue hover:bg-Excel-blue hover:text-white">
                     Login
                   </Button>
                 </Link>
                 <Link to="/sign-up">
-                  <Button className="bg-alura-blue text-white hover:bg-blue-600">
+                  <Button className="bg-Excel-blue text-white hover:bg-blue-600">
                     Matricule-se
                   </Button>
                 </Link>
@@ -82,7 +82,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <button 
-            className="md:hidden text-alura-darkgray"
+            className="md:hidden text-Excel-darkgray"
             onClick={toggleMenu}
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -93,28 +93,28 @@ const Navbar = () => {
         {isMenuOpen && (
           <div className="md:hidden mt-4 py-4 border-t">
             <nav className="flex flex-col space-y-4">
-              <Link to="/courses" className="text-alura-darkgray hover:text-alura-blue transition-colors">Cursos</Link>
-              <a href="#" className="text-alura-darkgray hover:text-alura-blue transition-colors">Formações</a>
-              <a href="#" className="text-alura-darkgray hover:text-alura-blue transition-colors">Para Empresas</a>
-              <Link to="/blog" className="text-alura-darkgray hover:text-alura-blue transition-colors">Blog</Link>
+              <Link to="/courses" className="text-Excel-darkgray hover:text-Excel-blue transition-colors">Cursos</Link>
+              <a href="#" className="text-Excel-darkgray hover:text-Excel-blue transition-colors">Formações</a>
+              <a href="#" className="text-Excel-darkgray hover:text-Excel-blue transition-colors">Para Empresas</a>
+              <Link to="/blog" className="text-Excel-darkgray hover:text-Excel-blue transition-colors">Blog</Link>
               
               {user ? (
                 <div className="pt-4">
                   <Link to="/backoffice" className="flex items-center space-x-2 mb-4">
-                    <div className="h-8 w-8 rounded-full bg-alura-blue flex items-center justify-center">
+                    <div className="h-8 w-8 rounded-full bg-Excel-blue flex items-center justify-center">
                       <Settings className="h-5 w-5 text-white" />
                     </div>
                     <span className="text-sm font-medium">Backoffice</span>
                   </Link>
                   <div className="flex items-center space-x-2 mb-4">
-                    <div className="h-8 w-8 rounded-full bg-alura-blue flex items-center justify-center">
+                    <div className="h-8 w-8 rounded-full bg-Excel-blue flex items-center justify-center">
                       <User className="h-5 w-5 text-white" />
                     </div>
                     <span className="text-sm">{user.email}</span>
                   </div>
                   <Button 
                     variant="outline" 
-                    className="w-full text-alura-blue border-alura-blue hover:bg-alura-blue hover:text-white"
+                    className="w-full text-Excel-blue border-Excel-blue hover:bg-Excel-blue hover:text-white"
                     onClick={handleLogout}
                   >
                     Sair
@@ -125,13 +125,13 @@ const Navbar = () => {
                   <Link to="/sign-in" className="w-full">
                     <Button 
                       variant="outline" 
-                      className="w-full text-alura-blue border-alura-blue hover:bg-alura-blue hover:text-white"
+                      className="w-full text-Excel-blue border-Excel-blue hover:bg-Excel-blue hover:text-white"
                     >
                       Login
                     </Button>
                   </Link>
                   <Link to="/sign-up" className="w-full">
-                    <Button className="w-full bg-alura-blue text-white hover:bg-blue-600">
+                    <Button className="w-full bg-Excel-blue text-white hover:bg-blue-600">
                       Matricule-se
                     </Button>
                   </Link>

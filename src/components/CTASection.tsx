@@ -12,7 +12,7 @@ const CTASection = () => {
         <p className="text-lg md:text-xl mb-8 max-w-3xl mx-auto">
           Acesso ilimitado a mais de 1.500 cursos, formações e projetos práticos para desenvolver suas habilidades em tecnologia.
         </p>
-        <Button className="bg-white text-alura-blue hover:bg-gray-100 text-lg py-6 px-8">
+        <Button className="bg-white text-Excel-blue hover:bg-gray-100 text-lg py-6 px-8">
           Comece agora
         </Button>
       </div>

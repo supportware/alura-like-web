@@ -63,7 +63,7 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				alura: {
+				Excel: {
 					blue: '#167BF7',
 					darkblue: '#051D3B',
 					gray: '#F1F8FF',

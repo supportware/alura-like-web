@@ -45,7 +45,7 @@ const StatsSection = () => {
 
   if (error) {
     return (
-      <section className="py-16 bg-alura-gray">
+      <section className="py-16 bg-Excel-gray">
         <div className="container mx-auto px-4 text-center text-red-500">
           {error}
         </div>
@@ -107,10 +107,10 @@ const StatsSection = () => {
   const displayStats = stats.length > 0 ? stats : defaultStats;
 
   return (
-    <section className="py-16 bg-alura-gray">
+    <section className="py-16 bg-Excel-gray">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-12 text-alura-black">
-          Alura em números
+        <h2 className="text-3xl font-bold text-center mb-12 text-Excel-black">
+          Excel em números
         </h2>
         
         {loading ? (
@@ -124,12 +124,12 @@ const StatsSection = () => {
               
               return (
                 <div key={stat.id} className="bg-white p-6 rounded-lg shadow-sm flex items-center">
-                  <div className="bg-alura-blue rounded-full p-4 mr-4">
+                  <div className="bg-Excel-blue rounded-full p-4 mr-4">
                     <IconComponent className="h-8 w-8 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-3xl font-bold text-alura-black">{stat.value}</h3>
-                    <p className="text-alura-darkgray">{stat.title}</p>
+                    <h3 className="text-3xl font-bold text-Excel-black">{stat.value}</h3>
+                    <p className="text-Excel-darkgray">{stat.title}</p>
                   </div>
                 </div>
               );

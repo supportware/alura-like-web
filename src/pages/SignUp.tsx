@@ -140,7 +140,7 @@ export default function SignUp() {
                     <div className="space-y-1 leading-none">
                       <FormLabel>
                         Eu concordo com os{" "}
-                        <Link to="/terms" className="text-alura-blue hover:underline">
+                        <Link to="/terms" className="text-Excel-blue hover:underline">
                           termos e condições
                         </Link>
                       </FormLabel>
@@ -156,7 +156,7 @@ export default function SignUp() {
         <CardFooter className="flex justify-center">
           <div className="text-center text-sm">
             Já tem uma conta?{" "}
-            <Link to="/sign-in" className="text-alura-blue hover:underline">
+            <Link to="/sign-in" className="text-Excel-blue hover:underline">
               Faça login
             </Link>
           </div>

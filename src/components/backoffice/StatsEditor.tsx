@@ -205,7 +205,7 @@ const StatsEditor = () => {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Alura em Números</h2>
+        <h2 className="text-2xl font-bold">Excel em Números</h2>
         <Button onClick={handleOpenAddDialog}>
           <Plus className="mr-2 h-4 w-4" />
           Adicionar Estatística
