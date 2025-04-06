@@ -210,8 +210,8 @@ const StudyReasonsEditor = () => {
           <Loader2 className="h-8 w-8 animate-spin" />
         </div>
       ) : (
-        <OrderableList 
-          items={reasons} 
+        <OrderableList<StudyReason>
+          items={reasons}
           renderItem={renderReasonItem}
           onOrderUpdate={updateStudyReasonsOrder}
         />

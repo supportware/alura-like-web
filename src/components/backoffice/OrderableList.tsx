@@ -47,18 +47,18 @@ const SortableItem = ({ id, children }: OrderableItemProps) => {
   );
 };
 
-interface OrderableListProps {
-  items: { id: string; [key: string]: any };
-  renderItem: (item: any) => React.ReactNode;
+interface OrderableListProps<T extends { id: string }> {
+  items: T[];
+  renderItem: (item: T) => React.ReactNode;
   onOrderUpdate: (orderedIds: string[]) => Promise<boolean>;
 }
 
-export const OrderableList: React.FC<OrderableListProps> = ({ 
+export const OrderableList = <T extends { id: string }>({ 
   items, 
   renderItem, 
   onOrderUpdate 
-}) => {
-  const [localItems, setLocalItems] = useState(items);
+}: OrderableListProps<T>): React.ReactElement => {
+  const [localItems, setLocalItems] = useState<T[]>(items);
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
