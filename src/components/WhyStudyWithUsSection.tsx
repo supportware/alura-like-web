@@ -22,14 +22,9 @@ const WhyStudyWithUsSection = () => {
   useEffect(() => {
     const loadReasons = async () => {
       setLoading(true);
-      try {
-        const data = await fetchStudyReasons();
-        setReasons(data);
-      } catch (error) {
-        console.error('Error loading study reasons:', error);
-      } finally {
-        setLoading(false);
-      }
+      const data = await fetchStudyReasons();
+      setReasons(data);
+      setLoading(false);
     };
 
     loadReasons();

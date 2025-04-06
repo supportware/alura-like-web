@@ -1,41 +1,34 @@
 
 import React, { useState, useEffect } from 'react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Loader2, Plus } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { OrderableList } from './OrderableList';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogFooter 
-} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
-import { 
-  School, 
-  CheckCircle, 
-  Monitor, 
-  Shield, 
-  PenTool, 
-  Clock 
-} from 'lucide-react';
-import { 
-  StudyReason, 
-  fetchStudyReasons, 
-  createStudyReason, 
-  updateStudyReason, 
-  deleteStudyReason,
-  updateStudyReasonsOrder 
-} from '@/services/supabase';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { useToast } from '@/hooks/use-toast';
+import { School, CheckCircle, Monitor, Shield, PenTool, Clock, Plus, Pencil, Trash2 } from 'lucide-react';
+import { IconMap } from '@/lib/utils';
+import { fetchStudyReasons, createStudyReason, updateStudyReason, deleteStudyReason, StudyReason } from '@/services/supabase';
 
 const icons = [
   { name: 'School', icon: School },
@@ -50,12 +43,12 @@ const StudyReasonsEditor = () => {
   const [reasons, setReasons] = useState<StudyReason[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [currentReason, setCurrentReason] = useState<Partial<StudyReason>>({
     title: '',
     description: '',
     icon: 'School'
   });
-  const [isEditing, setIsEditing] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -133,7 +126,7 @@ const StudyReasonsEditor = () => {
         });
       }
       setIsDialogOpen(false);
-      await loadReasons();
+      loadReasons();
     } catch (error) {
       console.error('Error saving reason:', error);
       toast({
@@ -152,7 +145,7 @@ const StudyReasonsEditor = () => {
           title: 'Excluído com sucesso',
           description: 'O item foi removido',
         });
-        await loadReasons();
+        loadReasons();
       } catch (error) {
         console.error('Error deleting reason:', error);
         toast({
@@ -164,36 +157,9 @@ const StudyReasonsEditor = () => {
     }
   };
 
-  const renderReasonItem = (reason: StudyReason) => {
-    const IconComponent = icons.find(i => i.name === reason.icon)?.icon || School;
-    
-    return (
-      <div className="flex items-center justify-between p-4 border-b">
-        <div className="flex items-center space-x-4">
-          <IconComponent className="h-6 w-6" />
-          <div>
-            <p className="font-medium">{reason.title}</p>
-            <p className="text-sm text-muted-foreground line-clamp-2">{reason.description}</p>
-          </div>
-        </div>
-        <div className="flex space-x-2">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={() => handleOpenEditDialog(reason)}
-          >
-            Editar
-          </Button>
-          <Button 
-            variant="destructive" 
-            size="sm" 
-            onClick={() => handleDeleteReason(reason.id)}
-          >
-            Excluir
-          </Button>
-        </div>
-      </div>
-    );
+  const renderIconComponent = (iconName: string) => {
+    const IconComponent = IconMap[iconName as keyof typeof IconMap] || School;
+    return <IconComponent className="h-5 w-5" />;
   };
 
   return (
@@ -207,14 +173,48 @@ const StudyReasonsEditor = () => {
 
       {isLoading ? (
         <div className="flex justify-center items-center h-48">
-          <Loader2 className="h-8 w-8 animate-spin" />
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-alura-blue"></div>
         </div>
       ) : (
-        <OrderableList<StudyReason>
-          items={reasons}
-          renderItem={renderReasonItem}
-          onOrderUpdate={updateStudyReasonsOrder}
-        />
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Ícone</TableHead>
+              <TableHead>Título</TableHead>
+              <TableHead>Descrição</TableHead>
+              <TableHead className="text-right">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {reasons.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                  Nenhum item encontrado
+                </TableCell>
+              </TableRow>
+            ) : (
+              reasons.map((reason) => (
+                <TableRow key={reason.id}>
+                  <TableCell>
+                    <div className="flex items-center justify-center">
+                      {renderIconComponent(reason.icon)}
+                    </div>
+                  </TableCell>
+                  <TableCell>{reason.title}</TableCell>
+                  <TableCell className="max-w-xs truncate">{reason.description}</TableCell>
+                  <TableCell className="text-right space-x-2">
+                    <Button variant="ghost" size="icon" onClick={() => handleOpenEditDialog(reason)}>
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => handleDeleteReason(reason.id)}>
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
       )}
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
