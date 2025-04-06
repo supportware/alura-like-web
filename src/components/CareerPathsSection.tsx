@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { 
@@ -202,11 +201,11 @@ const CareerPathsSection = () => {
                     <CarouselItem key={pathIndex} className="md:basis-1/3 lg:basis-1/4">
                       <Card className="hover:cursor-pointer h-full bg-black border-gray-800 hover:border-gray-600 transition-colors duration-300">
                         <CardContent className="p-0">
-                          <div className="h-48 overflow-hidden">
+                          <div className="aspect-video overflow-hidden">
                             <img 
                               src={path.image} 
                               alt={path.title}
-                              className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                              className="w-full h-full object-cover scale-100 hover:scale-110 transition-transform duration-300"
                             />
                           </div>
                         </CardContent>
