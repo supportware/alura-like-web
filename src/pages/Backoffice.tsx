@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
 import { 
@@ -36,6 +35,10 @@ const Backoffice = () => {
   const { user, logout } = useAuth();
   const { toast } = useToast();
   const [activeSection, setActiveSection] = React.useState('dashboard');
+  
+  useEffect(() => {
+    console.log('Backoffice initialized - ensuring all editors are ready');
+  }, []);
 
   if (!user) {
     return <Navigate to="/sign-in" />;
@@ -51,22 +54,14 @@ const Backoffice = () => {
 
   const renderContent = () => {
     switch(activeSection) {
-      case 'dashboard':
-        return <Dashboard />;
-      case 'courses':
-        return <div className="p-6">Gerenciamento de Cursos</div>;
-      case 'career-paths':
-        return <div className="p-6">Gerenciamento de Trilhas de Carreira</div>;
-      case 'testimonials':
-        return <TestimonialsEditor />;
-      case 'stats':
-        return <StatsEditor />;
-      case 'study-reasons':
-        return <StudyReasonsEditor />;
-      case 'faq':
-        return <FAQEditor />;
-      default:
-        return <Dashboard />;
+      case 'dashboard': return <Dashboard />;
+      case 'courses': return <div className="p-6">Gerenciamento de Cursos</div>;
+      case 'career-paths': return <div className="p-6">Gerenciamento de Trilhas de Carreira</div>;
+      case 'testimonials': return <TestimonialsEditor />;
+      case 'stats': return <StatsEditor />;
+      case 'study-reasons': return <StudyReasonsEditor />;
+      case 'faq': return <FAQEditor />;
+      default: return <Dashboard />;
     }
   };
 

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { BookOpen, Users, ThumbsUp, Trophy, GraduationCap, Award, Briefcase, Heart, Clock, Star, Globe, Code, Laptop, Loader2 } from 'lucide-react';
 import { fetchStats, Stat } from '@/services/supabase';
@@ -26,23 +25,33 @@ const StatsSection = () => {
   };
 
   useEffect(() => {
-    const loadStats = async () => {
-      setLoading(true);
+    const loadData = async () => {
       try {
         const data = await fetchStats();
-        console.log('Stats loaded:', data);
+        if (data.length === 0) {
+          setError('Nenhuma estatística encontrada');
+        }
         setStats(data);
-        setError(null);
       } catch (err) {
-        console.error('Error loading stats:', err);
-        setError('Não foi possível carregar as estatísticas. Tente novamente mais tarde.');
+        setError('Erro ao carregar estatísticas');
+        console.error(err);
       } finally {
         setLoading(false);
       }
     };
 
-    loadStats();
+    loadData();
   }, []);
+
+  if (error) {
+    return (
+      <section className="py-16 bg-alura-gray">
+        <div className="container mx-auto px-4 text-center text-red-500">
+          {error}
+        </div>
+      </section>
+    );
+  }
 
   const defaultStats = [
     {
@@ -107,10 +116,6 @@ const StatsSection = () => {
         {loading ? (
           <div className="flex justify-center items-center h-40">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          </div>
-        ) : error ? (
-          <div className="text-center p-6 text-red-500">
-            <p>{error}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">

@@ -1,71 +1,88 @@
-
 import React, { useState, useEffect } from 'react';
-import { useToast } from '@/components/ui/use-toast';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
-} from '@/components/ui/card';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { useToast } from '@/hooks/use-toast';
 import { FAQ, fetchFAQs, createFAQ, updateFAQ, deleteFAQ } from '@/services/supabase';
-import { PlusCircle } from 'lucide-react';
-import FAQForm from './faq/FAQForm';
-import FAQList from './faq/FAQList';
-import DeleteFAQDialog from './faq/DeleteFAQDialog';
+import { Edit, Trash2, Plus, Loader2 } from 'lucide-react';
 
 const FAQEditor = () => {
   const { toast } = useToast();
   const [faqs, setFaqs] = useState<FAQ[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [currentFAQ, setCurrentFAQ] = useState<Partial<FAQ>>({ question: '', answer: '' });
+  const [currentFAQ, setCurrentFAQ] = useState<Partial<FAQ>>({
+    question: '',
+    answer: '',
+  });
   const [isEditing, setIsEditing] = useState(false);
-  const [faqToDelete, setFaqToDelete] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     loadFAQs();
   }, []);
 
   const loadFAQs = async () => {
-    setLoading(true);
+    setIsLoading(true);
     try {
       const data = await fetchFAQs();
-      console.log('FAQs loaded in editor:', data);
+      console.log('FAQs carregadas:', data);
       setFaqs(data);
     } catch (error) {
       console.error('Error loading FAQs:', error);
       toast({
-        title: 'Erro',
-        description: 'Não foi possível carregar as perguntas frequentes.',
+        title: 'Erro ao carregar dados',
+        description: 'Não foi possível carregar as perguntas frequentes',
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
-  const handleAddNewClick = () => {
-    setCurrentFAQ({ question: '', answer: '' });
+  const handleOpenAddDialog = () => {
+    setCurrentFAQ({
+      question: '',
+      answer: '',
+    });
     setIsEditing(false);
     setIsDialogOpen(true);
   };
 
-  const handleEditClick = (faq: FAQ) => {
-    setCurrentFAQ(faq);
+  const handleOpenEditDialog = (faq: FAQ) => {
+    setCurrentFAQ({
+      id: faq.id,
+      question: faq.question,
+      answer: faq.answer,
+    });
     setIsEditing(true);
     setIsDialogOpen(true);
   };
 
-  const handleUpdateField = (field: string, value: string) => {
-    setCurrentFAQ((prev) => ({ ...prev, [field]: value }));
-  };
+  const handleSaveFAQ = async () => {
+    if (!currentFAQ.question || !currentFAQ.answer) {
+      toast({
+        title: 'Campos obrigatórios',
+        description: 'Por favor preencha todos os campos',
+        variant: 'destructive',
+      });
+      return;
+    }
 
-  const handleSave = async () => {
-    setIsSubmitting(true);
     try {
       if (isEditing && currentFAQ.id) {
         await updateFAQ(currentFAQ.id, {
@@ -73,17 +90,17 @@ const FAQEditor = () => {
           answer: currentFAQ.answer,
         });
         toast({
-          title: 'Sucesso',
-          description: 'FAQ atualizado com sucesso!',
+          title: 'Atualizado com sucesso',
+          description: 'As alterações foram salvas',
         });
       } else {
         await createFAQ({
-          question: currentFAQ.question || '',
-          answer: currentFAQ.answer || '',
+          question: currentFAQ.question!,
+          answer: currentFAQ.answer!,
         });
         toast({
-          title: 'Sucesso',
-          description: 'Nova FAQ adicionada com sucesso!',
+          title: 'Criado com sucesso',
+          description: 'Nova pergunta frequente adicionada',
         });
       }
       setIsDialogOpen(false);
@@ -91,42 +108,30 @@ const FAQEditor = () => {
     } catch (error) {
       console.error('Error saving FAQ:', error);
       toast({
-        title: 'Erro',
-        description: 'Não foi possível salvar o FAQ.',
+        title: 'Erro ao salvar',
+        description: 'Não foi possível salvar as alterações',
         variant: 'destructive',
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
-  const confirmDelete = (id: string) => {
-    setFaqToDelete(id);
-    setIsDeleteDialogOpen(true);
-  };
-
-  const handleDelete = async () => {
-    if (!faqToDelete) return;
-    
-    setIsSubmitting(true);
-    try {
-      await deleteFAQ(faqToDelete);
-      toast({
-        title: 'Sucesso',
-        description: 'FAQ excluída com sucesso!',
-      });
-      loadFAQs();
-      setIsDeleteDialogOpen(false);
-      setFaqToDelete(null);
-    } catch (error) {
-      console.error('Error deleting FAQ:', error);
-      toast({
-        title: 'Erro',
-        description: 'Não foi possível excluir o FAQ.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsSubmitting(false);
+  const handleDeleteFAQ = async (id: string) => {
+    if (window.confirm('Tem certeza que deseja excluir este item?')) {
+      try {
+        await deleteFAQ(id);
+        toast({
+          title: 'Excluído com sucesso',
+          description: 'A pergunta frequente foi removida',
+        });
+        loadFAQs();
+      } catch (error) {
+        console.error('Error deleting FAQ:', error);
+        toast({
+          title: 'Erro ao excluir',
+          description: 'Não foi possível excluir a pergunta frequente',
+          variant: 'destructive',
+        });
+      }
     }
   };
 
@@ -134,44 +139,85 @@ const FAQEditor = () => {
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Gerenciamento de Perguntas Frequentes</h1>
-        <Button onClick={handleAddNewClick}>
-          <PlusCircle className="mr-2 h-4 w-4" /> Adicionar Nova
+        <Button onClick={handleOpenAddDialog}>
+          <Plus className="mr-2 h-4 w-4" /> Adicionar
         </Button>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Perguntas Frequentes</CardTitle>
-          <CardDescription>
-            Gerencie as perguntas frequentes exibidas no site.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <FAQList 
-            faqs={faqs} 
-            loading={loading} 
-            onEdit={handleEditClick} 
-            onDelete={confirmDelete} 
-          />
-        </CardContent>
-      </Card>
+      {isLoading ? (
+        <div className="flex justify-center items-center h-48">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        </div>
+      ) : (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Pergunta</TableHead>
+              <TableHead>Resposta</TableHead>
+              <TableHead className="text-right">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {faqs.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
+                  Nenhuma pergunta frequente encontrada
+                </TableCell>
+              </TableRow>
+            ) : (
+              faqs.map((faq) => (
+                <TableRow key={faq.id}>
+                  <TableCell className="font-medium">{faq.question}</TableCell>
+                  <TableCell className="max-w-md truncate">{faq.answer}</TableCell>
+                  <TableCell className="text-right space-x-2">
+                    <Button variant="ghost" size="icon" onClick={() => handleOpenEditDialog(faq)}>
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => handleDeleteFAQ(faq.id)}>
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      )}
 
-      <FAQForm 
-        isOpen={isDialogOpen}
-        onOpenChange={setIsDialogOpen}
-        currentFAQ={currentFAQ}
-        isEditing={isEditing}
-        isSubmitting={isSubmitting}
-        onSave={handleSave}
-        onUpdateField={handleUpdateField}
-      />
-
-      <DeleteFAQDialog 
-        isOpen={isDeleteDialogOpen}
-        onOpenChange={setIsDeleteDialogOpen}
-        isSubmitting={isSubmitting}
-        onDelete={handleDelete}
-      />
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {isEditing ? 'Editar pergunta frequente' : 'Adicionar pergunta frequente'}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <label htmlFor="question" className="text-sm font-medium">Pergunta</label>
+              <Input
+                id="question"
+                value={currentFAQ.question || ''}
+                onChange={(e) => setCurrentFAQ({ ...currentFAQ, question: e.target.value })}
+                placeholder="Ex: Como funciona o curso?"
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="answer" className="text-sm font-medium">Resposta</label>
+              <Textarea
+                id="answer"
+                value={currentFAQ.answer || ''}
+                onChange={(e) => setCurrentFAQ({ ...currentFAQ, answer: e.target.value })}
+                placeholder="Descreva a resposta para esta pergunta"
+                rows={4}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancelar</Button>
+            <Button onClick={handleSaveFAQ}>Salvar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
