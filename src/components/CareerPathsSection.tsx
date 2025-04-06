@@ -185,48 +185,37 @@ const careerPathCategories = [
 
 const CareerPathsSection = () => {
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16 bg-black">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-12 text-alura-black">
+        <h2 className="text-3xl font-bold text-center mb-12 text-white">
           Trilhas de Cursos por Carreira
         </h2>
         
         <div className="space-y-12">
           {careerPathCategories.map((category, catIndex) => (
             <div key={catIndex} className="mb-10">
-              <h3 className="text-2xl font-bold mb-6 text-alura-black">{category.category}</h3>
+              <h3 className="text-2xl font-bold mb-6 text-white">{category.category}</h3>
               
               <Carousel className="w-full">
                 <CarouselContent>
                   {category.paths.map((path, pathIndex) => (
                     <CarouselItem key={pathIndex} className="md:basis-1/3 lg:basis-1/4">
-                      <Card className="category-card border hover:cursor-pointer h-full bg-gray-100/50 hover:bg-gray-200/50 transition-colors duration-300">
+                      <Card className="hover:cursor-pointer h-full bg-black border-gray-800 hover:border-gray-600 transition-colors duration-300">
                         <CardContent className="p-0">
-                          <div className="h-40 overflow-hidden">
+                          <div className="h-48 overflow-hidden">
                             <img 
                               src={path.image} 
                               alt={path.title}
                               className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                             />
                           </div>
-                          <div className="p-4">
-                            <div className="flex items-start">
-                              <div className={`${path.color} p-3 rounded-full mr-4`}>
-                                <path.icon className="h-6 w-6 text-alura-blue" />
-                              </div>
-                              <div>
-                                <h3 className="font-bold text-lg">{path.title}</h3>
-                                <p className="text-alura-darkgray text-sm mt-1">Explore a trilha</p>
-                              </div>
-                            </div>
-                          </div>
                         </CardContent>
                       </Card>
                     </CarouselItem>
                   ))}
                 </CarouselContent>
-                <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2" />
-                <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2" />
+                <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 bg-white/10 hover:bg-white/20 text-white border-gray-600" />
+                <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 bg-white/10 hover:bg-white/20 text-white border-gray-600" />
               </Carousel>
             </div>
           ))}
