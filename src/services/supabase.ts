@@ -396,7 +396,7 @@ export const fetchStats = async (): Promise<Stat[]> => {
     const { data, error } = await supabase
       .from('stats')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('display_order', { ascending: true });
 
     if (error) {
       console.error('Error fetching stats:', error);
@@ -540,5 +540,103 @@ export const importGoogleMapsReviews = async (placeId: string): Promise<Testimon
   } catch (error) {
     console.error('Error calling import-google-maps-reviews function:', error);
     return null;
+  }
+};
+
+// Add these methods to the existing supabase.ts file
+
+export const updateStatsOrder = async (orderedIds: string[]): Promise<boolean> => {
+  try {
+    // Update the order of multiple stats at once
+    const updatePromises = orderedIds.map((id, index) => 
+      updateStatOrder(id, index + 1)
+    );
+    
+    const results = await Promise.all(updatePromises);
+    return results.every(result => result === true);
+  } catch (error) {
+    console.error('Unexpected error updating stats order:', error);
+    return false;
+  }
+};
+
+export const updateStudyReasonsOrder = async (orderedIds: string[]): Promise<boolean> => {
+  try {
+    // Update the order of multiple study reasons at once
+    const updatePromises = orderedIds.map((id, index) => 
+      updateStudyReasonOrder(id, index + 1)
+    );
+    
+    const results = await Promise.all(updatePromises);
+    return results.every(result => result === true);
+  } catch (error) {
+    console.error('Unexpected error updating study reasons order:', error);
+    return false;
+  }
+};
+
+// Ensure these helper functions are present in the supabase.ts file
+const updateStatOrder = async (id: string, order: number): Promise<boolean> => {
+  try {
+    // Use RPC to update the stat order
+    const { data, error } = await supabase.rpc<boolean>(
+      'update_stat_order',
+      {
+        p_id: id,
+        p_order: order
+      }
+    );
+
+    if (error) {
+      console.error('Error updating stat order:', error);
+      return false;
+    }
+
+    return data || false;
+  } catch (error) {
+    console.error('Unexpected error updating stat order:', error);
+    return false;
+  }
+};
+
+const updateStudyReasonOrder = async (id: string, order: number): Promise<boolean> => {
+  try {
+    // Use RPC to update the study reason order
+    const { data, error } = await supabase.rpc<boolean>(
+      'update_study_reason_order',
+      {
+        p_id: id,
+        p_order: order
+      }
+    );
+
+    if (error) {
+      console.error('Error updating study reason order:', error);
+      return false;
+    }
+
+    return data || false;
+  } catch (error) {
+    console.error('Unexpected error updating study reason order:', error);
+    return false;
+  }
+};
+
+export const fetchStudyReasons = async (): Promise<StudyReason[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('study_reasons')
+      .select('*')
+      .order('display_order', { ascending: true });
+
+    if (error) {
+      console.error('Error fetching study reasons:', error);
+      return [];
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error('Unexpected error fetching study reasons:', error);
+    return [];
   }
 };
