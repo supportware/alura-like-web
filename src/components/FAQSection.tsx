@@ -39,6 +39,7 @@ const FAQSection = () => {
       id: '1',
       question: "Como funcionam os cursos da Alura?",
       answer: "Os cursos da Alura são 100% online e você pode assistir quantas vezes quiser, quando e onde quiser. Após se matricular, você tem acesso a todas as aulas, exercícios e projetos práticos.",
+      display_order: 1,
       created_at: '',
       updated_at: ''
     },
@@ -46,6 +47,7 @@ const FAQSection = () => {
       id: '2',
       question: "Quanto tempo tenho para concluir um curso?",
       answer: "Não há prazo para concluir os cursos. Você pode estudar no seu próprio ritmo, e o acesso permanece disponível enquanto sua assinatura estiver ativa.",
+      display_order: 2,
       created_at: '',
       updated_at: ''
     },
@@ -53,12 +55,14 @@ const FAQSection = () => {
       id: '3',
       question: "Os certificados são reconhecidos pelo mercado?",
       answer: "Sim, os certificados da Alura são reconhecidos pelo mercado de trabalho. Eles comprovam as habilidades e conhecimentos adquiridos, sendo um diferencial para o seu currículo.",
+      display_order: 3,
       created_at: '',
       updated_at: ''
     }
   ];
 
-  const displayFaqs = faqs.length > 0 ? faqs : defaultFaqs;
+  // Ordenar FAQs pela ordem definida no backoffice ou usar os padrões
+  const displayFaqs = faqs.length > 0 ? [...faqs].sort((a, b) => (a.display_order || 0) - (b.display_order || 0)) : defaultFaqs;
 
   return (
     <section className="py-16 bg-alura-gray">
