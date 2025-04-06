@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 
 // Interfaces para as entidades
@@ -424,7 +423,7 @@ export const createStat = async (stat: Omit<Stat, 'id' | 'created_at' | 'updated
     const { data: rpcSuccess, error: rpcError } = await supabase.rpc(
       'insert_stat',
       {
-        p_label: stat.label,
+        p_title: stat.label, // Use label as title for backward compatibility
         p_value: stat.value,
         p_icon: stat.icon || null
       }
@@ -461,7 +460,7 @@ export const updateStat = async (id: string, updates: Partial<Stat>): Promise<St
       'update_stat',
       {
         p_id: id,
-        p_label: updates.label || '',
+        p_title: updates.label || '', // Use label as title for backward compatibility
         p_value: updates.value || '',
         p_icon: updates.icon === undefined ? null : updates.icon
       }

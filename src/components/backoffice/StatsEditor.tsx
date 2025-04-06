@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Loader2, Plus } from 'lucide-react';
@@ -27,7 +28,8 @@ import {
   Bell,
   BookOpen,
   Calendar,
-  Certificate,
+  // Certificate was not found in lucide-react, replacing with Award as a fallback
+  Award as Certificate,
   Pencil
 } from 'lucide-react';
 import { 
@@ -202,8 +204,6 @@ const StatsEditor = () => {
       </div>
     );
   };
-
-  
 
   return (
     <div className="p-6">
