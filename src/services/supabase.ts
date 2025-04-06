@@ -80,30 +80,7 @@ export interface BlogPost {
 }
 
 // Funções para buscar dados
-export const fetchStudyReasons = async (): Promise<StudyReason[]> => {
-  try {
-    const { data, error } = await supabase
-      .from('study_reasons')
-      .select('*')
-      .order('display_order', { ascending: true });
-
-    if (error) {
-      console.error('Error fetching study reasons:', error);
-      return [];
-    }
-
-    // Ensure each reason has display_order property
-    const reasons = (data || []).map(reason => ({
-      ...reason,
-      display_order: reason.display_order || 0
-    }));
-
-    return reasons;
-  } catch (error) {
-    console.error('Unexpected error fetching study reasons:', error);
-    return [];
-  }
-};
+// Removed the duplicate fetchStudyReasons and kept the updated version that sorts by display_order
 
 export const createStudyReason = async (newReason: Omit<StudyReason, 'id' | 'created_at' | 'updated_at'>): Promise<StudyReason | null> => {
   const { data, error } = await supabase
@@ -209,10 +186,13 @@ export const fetchFAQs = async (): Promise<FAQ[]> => {
 export const createFAQ = async (faq: Omit<FAQ, 'id' | 'created_at' | 'updated_at' | 'display_order'>): Promise<FAQ | null> => {
   try {
     // Usar RPC para contornar o RLS
-    const { data: rpcSuccess, error: rpcError } = await supabase.rpc<boolean, {}>('insert_faq', {
-      p_question: faq.question,
-      p_answer: faq.answer
-    });
+    const { data: rpcSuccess, error: rpcError } = await supabase.rpc(
+      'insert_faq',
+      {
+        p_question: faq.question,
+        p_answer: faq.answer
+      }
+    );
 
     if (rpcError) {
       console.error('Error creating FAQ:', rpcError);
@@ -247,11 +227,14 @@ export const createFAQ = async (faq: Omit<FAQ, 'id' | 'created_at' | 'updated_at
 export const updateFAQ = async (id: string, updates: Partial<Omit<FAQ, 'id' | 'created_at' | 'updated_at'>>): Promise<FAQ | null> => {
   try {
     // Usar RPC para contornar o RLS
-    const { data: rpcSuccess, error: rpcError } = await supabase.rpc<boolean, {}>('update_faq', {
-      p_id: id,
-      p_question: updates.question || '',
-      p_answer: updates.answer || ''
-    });
+    const { data: rpcSuccess, error: rpcError } = await supabase.rpc(
+      'update_faq',
+      {
+        p_id: id,
+        p_question: updates.question || '',
+        p_answer: updates.answer || ''
+      }
+    );
 
     if (rpcError) {
       console.error('Error updating FAQ:', rpcError);
@@ -284,17 +267,20 @@ export const updateFAQ = async (id: string, updates: Partial<Omit<FAQ, 'id' | 'c
 export const updateFAQOrder = async (id: string, order: number): Promise<boolean> => {
   try {
     // Usar RPC para atualizar a ordem
-    const { data, error } = await supabase.rpc<boolean, {}>('update_faq_order', {
-      p_id: id,
-      p_order: order
-    });
+    const { data, error } = await supabase.rpc(
+      'update_faq_order',
+      {
+        p_id: id,
+        p_order: order
+      }
+    );
 
     if (error) {
       console.error('Error updating FAQ order:', error);
       return false;
     }
 
-    return true;
+    return data === true;
   } catch (error) {
     console.error('Unexpected error updating FAQ order:', error);
     return false;
@@ -319,16 +305,19 @@ export const updateFAQsOrder = async (orderedIds: string[]): Promise<boolean> =>
 export const deleteFAQ = async (id: string): Promise<boolean> => {
   try {
     // Usar RPC para contornar o RLS
-    const { data, error } = await supabase.rpc<boolean, {}>('delete_faq', {
-      p_id: id
-    });
+    const { data, error } = await supabase.rpc(
+      'delete_faq',
+      {
+        p_id: id
+      }
+    );
 
     if (error) {
       console.error('Error deleting FAQ:', error);
       return false;
     }
 
-    return data || false;
+    return data === true;
   } catch (error) {
     console.error('Unexpected error deleting FAQ:', error);
     return false;
@@ -432,11 +421,14 @@ export const fetchStats = async (): Promise<Stat[]> => {
 export const createStat = async (stat: Omit<Stat, 'id' | 'created_at' | 'updated_at'>): Promise<Stat | null> => {
   try {
     // Usar RPC para contornar o RLS
-    const { data: rpcSuccess, error: rpcError } = await supabase.rpc<boolean, {}>('insert_stat', {
-      p_label: stat.label,
-      p_value: stat.value,
-      p_icon: stat.icon || null
-    });
+    const { data: rpcSuccess, error: rpcError } = await supabase.rpc(
+      'insert_stat',
+      {
+        p_label: stat.label,
+        p_value: stat.value,
+        p_icon: stat.icon || null
+      }
+    );
 
     if (rpcError) {
       console.error('Error creating stat:', rpcError);
@@ -465,12 +457,15 @@ export const createStat = async (stat: Omit<Stat, 'id' | 'created_at' | 'updated
 export const updateStat = async (id: string, updates: Partial<Stat>): Promise<Stat | null> => {
   try {
     // Usar RPC para contornar o RLS
-    const { data: rpcSuccess, error: rpcError } = await supabase.rpc<boolean, {}>('update_stat', {
-      p_id: id,
-      p_label: updates.label || '',
-      p_value: updates.value || '',
-      p_icon: updates.icon === undefined ? null : updates.icon
-    });
+    const { data: rpcSuccess, error: rpcError } = await supabase.rpc(
+      'update_stat',
+      {
+        p_id: id,
+        p_label: updates.label || '',
+        p_value: updates.value || '',
+        p_icon: updates.icon === undefined ? null : updates.icon
+      }
+    );
 
     if (rpcError) {
       console.error('Error updating stat:', rpcError);
@@ -503,16 +498,19 @@ export const updateStat = async (id: string, updates: Partial<Stat>): Promise<St
 export const deleteStat = async (id: string): Promise<boolean> => {
   try {
     // Usar RPC para contornar o RLS
-    const { data, error } = await supabase.rpc<boolean, {}>('delete_stat', {
-      p_id: id
-    });
+    const { data, error } = await supabase.rpc(
+      'delete_stat',
+      {
+        p_id: id
+      }
+    );
 
     if (error) {
       console.error('Error deleting stat:', error);
       return false;
     }
 
-    return data || false;
+    return data === true;
   } catch (error) {
     console.error('Unexpected error in deleteStat:', error);
     return false;
@@ -573,17 +571,20 @@ export const updateStudyReasonsOrder = async (orderedIds: string[]): Promise<boo
 const updateStatOrder = async (id: string, order: number): Promise<boolean> => {
   try {
     // Use RPC to update the stat order
-    const { data, error } = await supabase.rpc<boolean, {}>('update_stat_order', {
-      p_id: id,
-      p_order: order
-    });
+    const { data, error } = await supabase.rpc(
+      'update_stat_order',
+      {
+        p_id: id,
+        p_order: order
+      }
+    );
 
     if (error) {
       console.error('Error updating stat order:', error);
       return false;
     }
 
-    return data || false;
+    return data === true;
   } catch (error) {
     console.error('Unexpected error updating stat order:', error);
     return false;
@@ -593,19 +594,47 @@ const updateStatOrder = async (id: string, order: number): Promise<boolean> => {
 const updateStudyReasonOrder = async (id: string, order: number): Promise<boolean> => {
   try {
     // Use RPC to update the study reason order
-    const { data, error } = await supabase.rpc<boolean, {}>('update_study_reason_order', {
-      p_id: id,
-      p_order: order
-    });
+    const { data, error } = await supabase.rpc(
+      'update_study_reason_order',
+      {
+        p_id: id,
+        p_order: order
+      }
+    );
 
     if (error) {
       console.error('Error updating study reason order:', error);
       return false;
     }
 
-    return data || false;
+    return data === true;
   } catch (error) {
     console.error('Unexpected error updating study reason order:', error);
     return false;
+  }
+};
+
+export const fetchStudyReasons = async (): Promise<StudyReason[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('study_reasons')
+      .select('*')
+      .order('display_order', { ascending: true });
+
+    if (error) {
+      console.error('Error fetching study reasons:', error);
+      return [];
+    }
+
+    // Ensure each reason has display_order property
+    const reasons = (data || []).map(reason => ({
+      ...reason,
+      display_order: reason.display_order || 0
+    }));
+
+    return reasons;
+  } catch (error) {
+    console.error('Unexpected error fetching study reasons:', error);
+    return [];
   }
 };

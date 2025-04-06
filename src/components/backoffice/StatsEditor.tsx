@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Loader2, Plus } from 'lucide-react';
@@ -20,25 +19,38 @@ import {
   SelectValue 
 } from '@/components/ui/select';
 import { 
-  BookOpen, Users, ThumbsUp, Trophy, GraduationCap, Award, 
-  Briefcase, Heart, Clock, Star, Globe, Code, Laptop 
+  ArrowUp, 
+  ArrowDown, 
+  UserCheck, 
+  Award, 
+  Star, 
+  Bell,
+  BookOpen,
+  Calendar,
+  Certificate,
+  Pencil
 } from 'lucide-react';
-import { Stat, fetchStats, createStat, updateStat, deleteStat, updateStatsOrder } from '@/services/supabase';
+import { 
+  Stat, 
+  fetchStats, 
+  createStat, 
+  updateStat, 
+  deleteStat,
+  updateStatsOrder 
+} from '@/services/supabase';
 
+// Same icon set as before
 const icons = [
-  { name: 'BookOpen', icon: BookOpen },
-  { name: 'Users', icon: Users },
-  { name: 'ThumbsUp', icon: ThumbsUp },
-  { name: 'Trophy', icon: Trophy },
-  { name: 'GraduationCap', icon: GraduationCap },
+  { name: 'ArrowUp', icon: ArrowUp },
+  { name: 'ArrowDown', icon: ArrowDown },
+  { name: 'UserCheck', icon: UserCheck },
   { name: 'Award', icon: Award },
-  { name: 'Briefcase', icon: Briefcase },
-  { name: 'Heart', icon: Heart },
-  { name: 'Clock', icon: Clock },
   { name: 'Star', icon: Star },
-  { name: 'Globe', icon: Globe },
-  { name: 'Code', icon: Code },
-  { name: 'Laptop', icon: Laptop },
+  { name: 'Bell', icon: Bell },
+  { name: 'BookOpen', icon: BookOpen },
+  { name: 'Calendar', icon: Calendar },
+  { name: 'Certificate', icon: Certificate },
+  { name: 'Pencil', icon: Pencil },
 ];
 
 const StatsEditor = () => {
@@ -46,9 +58,9 @@ const StatsEditor = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentStat, setCurrentStat] = useState<Partial<Stat>>({
-    title: '',
+    label: '',
     value: '',
-    icon: 'BookOpen',
+    icon: 'Star'
   });
   const [isEditing, setIsEditing] = useState(false);
   const { toast } = useToast();
@@ -63,6 +75,7 @@ const StatsEditor = () => {
       const data = await fetchStats();
       setStats(data);
     } catch (error) {
+      console.error('Error loading stats:', error);
       toast({
         title: 'Erro ao carregar dados',
         description: 'Não foi possível carregar as estatísticas',
@@ -75,9 +88,9 @@ const StatsEditor = () => {
 
   const handleOpenAddDialog = () => {
     setCurrentStat({
-      title: '',
+      label: '',
       value: '',
-      icon: 'BookOpen',
+      icon: 'Star'
     });
     setIsEditing(false);
     setIsDialogOpen(true);
@@ -86,16 +99,16 @@ const StatsEditor = () => {
   const handleOpenEditDialog = (stat: Stat) => {
     setCurrentStat({
       id: stat.id,
-      title: stat.title,
+      label: stat.label,
       value: stat.value,
-      icon: stat.icon
+      icon: stat.icon || 'Star'
     });
     setIsEditing(true);
     setIsDialogOpen(true);
   };
 
   const handleSaveStat = async () => {
-    if (!currentStat.title || !currentStat.value || !currentStat.icon) {
+    if (!currentStat.label || !currentStat.value) {
       toast({
         title: 'Campos obrigatórios',
         description: 'Por favor preencha todos os campos',
@@ -106,44 +119,33 @@ const StatsEditor = () => {
 
     try {
       if (isEditing && currentStat.id) {
-        const updated = await updateStat(currentStat.id, {
-          title: currentStat.title,
+        await updateStat(currentStat.id, {
+          label: currentStat.label,
           value: currentStat.value,
           icon: currentStat.icon
         });
-        
-        if (!updated) {
-          toast({
-            title: 'Erro ao atualizar',
-            description: 'Verifique sua conexão e permissões',
-            variant: 'destructive',
-          });
-          return;
-        }
-      } else {
-        const created = await createStat({
-          title: currentStat.title!,
-          value: currentStat.value!,
-          icon: currentStat.icon!
+        toast({
+          title: 'Atualizado com sucesso',
+          description: 'As alterações foram salvas',
         });
-        
-        if (!created) {
-          toast({
-            title: 'Erro ao criar estatística',
-            description: 'Problema com permissões de acesso ao banco de dados',
-            variant: 'destructive',
-          });
-          return;
-        }
+      } else {
+        await createStat({
+          label: currentStat.label!,
+          value: currentStat.value!,
+          icon: currentStat.icon || null
+        });
+        toast({
+          title: 'Criado com sucesso',
+          description: 'Nova estatística adicionada',
+        });
       }
-      
-      await loadStats();
       setIsDialogOpen(false);
+      await loadStats();
     } catch (error) {
-      console.error('Erro ao salvar estatística:', error);
+      console.error('Error saving stat:', error);
       toast({
         title: 'Erro ao salvar',
-        description: 'Ocorreu um erro ao salvar as alterações',
+        description: 'Não foi possível salvar as alterações',
         variant: 'destructive',
       });
     }
@@ -152,25 +154,17 @@ const StatsEditor = () => {
   const handleDeleteStat = async (id: string) => {
     if (window.confirm('Tem certeza que deseja excluir este item?')) {
       try {
-        const success = await deleteStat(id);
-        if (success) {
-          toast({
-            title: 'Excluído com sucesso',
-            description: 'A estatística foi removida',
-          });
-          await loadStats();
-        } else {
-          toast({
-            title: 'Erro ao excluir',
-            description: 'Problema de permissão ao tentar excluir a estatística',
-            variant: 'destructive',
-          });
-        }
+        await deleteStat(id);
+        toast({
+          title: 'Excluído com sucesso',
+          description: 'O item foi removido',
+        });
+        await loadStats();
       } catch (error) {
-        console.error('Erro ao excluir estatística:', error);
+        console.error('Error deleting stat:', error);
         toast({
           title: 'Erro ao excluir',
-          description: 'Não foi possível excluir a estatística',
+          description: 'Não foi possível excluir o item',
           variant: 'destructive',
         });
       }
@@ -178,14 +172,14 @@ const StatsEditor = () => {
   };
 
   const renderStatItem = (stat: Stat) => {
-    const IconComponent = icons.find(i => i.name === stat.icon)?.icon || BookOpen;
+    const IconComponent = icons.find(i => i.name === stat.icon)?.icon;
     
     return (
       <div className="flex items-center justify-between p-4 border-b">
         <div className="flex items-center space-x-4">
-          <IconComponent className="h-6 w-6" />
+          {IconComponent && <IconComponent className="h-6 w-6" />}
           <div>
-            <p className="font-medium">{stat.title}</p>
+            <p className="font-medium">{stat.label}</p>
             <p className="text-sm text-muted-foreground">{stat.value}</p>
           </div>
         </div>
@@ -209,12 +203,14 @@ const StatsEditor = () => {
     );
   };
 
+  
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Alura em Números</h1>
+        <h1 className="text-2xl font-bold">Estatísticas</h1>
         <Button onClick={handleOpenAddDialog}>
-          <Plus className="mr-2 h-4 w-4" /> Adicionar Estatística
+          <Plus className="mr-2 h-4 w-4" /> Adicionar
         </Button>
       </div>
 
@@ -223,8 +219,8 @@ const StatsEditor = () => {
           <Loader2 className="h-8 w-8 animate-spin" />
         </div>
       ) : (
-        <OrderableList 
-          items={stats} 
+        <OrderableList<Stat>
+          items={stats}
           renderItem={renderStatItem}
           onOrderUpdate={updateStatsOrder}
         />
@@ -239,12 +235,12 @@ const StatsEditor = () => {
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <label htmlFor="title" className="text-sm font-medium">Título</label>
+              <label htmlFor="label" className="text-sm font-medium">Título</label>
               <Input
-                id="title"
-                value={currentStat.title || ''}
-                onChange={(e) => setCurrentStat({ ...currentStat, title: e.target.value })}
-                placeholder="Ex: Total de Alunos"
+                id="label"
+                value={currentStat.label || ''}
+                onChange={(e) => setCurrentStat({ ...currentStat, label: e.target.value })}
+                placeholder="Ex: Alunos formados"
               />
             </div>
             <div className="space-y-2">
@@ -253,13 +249,13 @@ const StatsEditor = () => {
                 id="value"
                 value={currentStat.value || ''}
                 onChange={(e) => setCurrentStat({ ...currentStat, value: e.target.value })}
-                placeholder="Ex: 10.000+"
+                placeholder="Ex: 18.000+"
               />
             </div>
             <div className="space-y-2">
               <label htmlFor="icon" className="text-sm font-medium">Ícone</label>
               <Select
-                value={currentStat.icon || 'BookOpen'}
+                value={currentStat.icon || 'Star'}
                 onValueChange={(value) => setCurrentStat({ ...currentStat, icon: value })}
               >
                 <SelectTrigger id="icon">
