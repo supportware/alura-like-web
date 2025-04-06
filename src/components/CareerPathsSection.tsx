@@ -185,7 +185,7 @@ const careerPathCategories = [
 
 const CareerPathsSection = () => {
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-12 text-alura-black">
           Trilhas de Cursos por Carreira
@@ -200,7 +200,7 @@ const CareerPathsSection = () => {
                 <CarouselContent>
                   {category.paths.map((path, pathIndex) => (
                     <CarouselItem key={pathIndex} className="md:basis-1/3 lg:basis-1/4">
-                      <Card className="category-card border hover:cursor-pointer h-full">
+                      <Card className="category-card border hover:cursor-pointer h-full bg-gray-100/50 hover:bg-gray-200/50 transition-colors duration-300">
                         <CardContent className="p-0">
                           <div className="h-40 overflow-hidden">
                             <img 
