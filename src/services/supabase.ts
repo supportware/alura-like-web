@@ -151,7 +151,8 @@ export const deleteStudyReason = async (id: string): Promise<boolean> => {
 export const fetchCourses = async (): Promise<Course[]> => {
   const { data, error } = await supabase
     .from('courses')
-    .select('*');
+    .select('*')
+    .order('created_at', { ascending: false });
 
   if (error) {
     console.error('Error fetching courses:', error);
@@ -159,6 +160,51 @@ export const fetchCourses = async (): Promise<Course[]> => {
   }
 
   return data || [];
+};
+
+export const createCourse = async (newCourse: Omit<Course, 'id' | 'created_at' | 'updated_at'>): Promise<Course | null> => {
+  const { data, error } = await supabase
+    .from('courses')
+    .insert(newCourse)
+    .select('*')
+    .single();
+
+  if (error) {
+    console.error('Error creating course:', error);
+    return null;
+  }
+
+  return data;
+};
+
+export const updateCourse = async (id: string, updates: Partial<Course>): Promise<Course | null> => {
+  const { data, error } = await supabase
+    .from('courses')
+    .update(updates)
+    .eq('id', id)
+    .select('*')
+    .single();
+
+  if (error) {
+    console.error('Error updating course:', error);
+    return null;
+  }
+
+  return data;
+};
+
+export const deleteCourse = async (id: string): Promise<boolean> => {
+  const { error } = await supabase
+    .from('courses')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error deleting course:', error);
+    return false;
+  }
+
+  return true;
 };
 
 // FAQ functions

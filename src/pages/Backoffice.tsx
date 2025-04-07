@@ -28,6 +28,7 @@ import StudyReasonsEditor from '@/components/backoffice/StudyReasonsEditor';
 import FAQEditor from '@/components/backoffice/FAQEditor';
 import TestimonialsEditor from '@/components/backoffice/TestimonialsEditor';
 import StatsEditor from '@/components/backoffice/StatsEditor';
+import CourseEditor from '@/components/backoffice/CourseEditor';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -55,7 +56,7 @@ const Backoffice = () => {
   const renderContent = () => {
     switch(activeSection) {
       case 'dashboard': return <Dashboard />;
-      case 'courses': return <div className="p-6">Gerenciamento de Cursos</div>;
+      case 'courses': return <CourseEditor />;
       case 'career-paths': return <div className="p-6">Gerenciamento de Trilhas de Carreira</div>;
       case 'testimonials': return <TestimonialsEditor />;
       case 'stats': return <StatsEditor />;
