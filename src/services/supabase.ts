@@ -334,7 +334,7 @@ export const updateFAQOrder = async (id: string, order: number): Promise<boolean
       return false;
     }
 
-    return true;
+    return Boolean(data);
   } catch (error) {
     console.error('Unexpected error updating FAQ order:', error);
     return false;
@@ -371,7 +371,7 @@ export const deleteFAQ = async (id: string): Promise<boolean> => {
       return false;
     }
 
-    return data || false;
+    return Boolean(data);
   } catch (error) {
     console.error('Unexpected error deleting FAQ:', error);
     return false;
@@ -460,11 +460,7 @@ export const fetchStats = async (): Promise<Stat[]> => {
 export const createStat = async (stat: Omit<Stat, 'id' | 'created_at' | 'updated_at'>): Promise<Stat | null> => {
   try {
     // Usar RPC para contornar o RLS
-    const { data: rpcSuccess, error: rpcError } = await supabase.rpc<boolean, {
-      p_title: string;
-      p_value: string;
-      p_icon: string | null;
-    }>(
+    const { data: rpcSuccess, error: rpcError } = await supabase.rpc<boolean>(
       'insert_stat',
       {
         p_title: stat.title,
@@ -478,19 +474,19 @@ export const createStat = async (stat: Omit<Stat, 'id' | 'created_at' | 'updated
       return null;
     }
 
-    if (rpcSuccess) {
-      // Buscar a estatística recém-criada
-      const { data: fetchedStat } = await supabase
-        .from('stats')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
-
-      return fetchedStat;
+    if (!rpcSuccess) {
+      return null;
     }
 
-    return null;
+    // Buscar a estatística recém-criada
+    const { data: fetchedStat } = await supabase
+      .from('stats')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    return fetchedStat as Stat;
   } catch (error) {
     console.error('Unexpected error in createStat:', error);
     return null;
@@ -500,12 +496,7 @@ export const createStat = async (stat: Omit<Stat, 'id' | 'created_at' | 'updated
 export const updateStat = async (id: string, updates: Partial<Stat>): Promise<Stat | null> => {
   try {
     // Usar RPC para contornar o RLS
-    const { data: rpcSuccess, error: rpcError } = await supabase.rpc<boolean, {
-      p_id: string;
-      p_title: string;
-      p_value: string;
-      p_icon: string | null;
-    }>(
+    const { data: rpcSuccess, error: rpcError } = await supabase.rpc<boolean>(
       'update_stat',
       {
         p_id: id,
@@ -536,7 +527,7 @@ export const updateStat = async (id: string, updates: Partial<Stat>): Promise<St
       return null;
     }
 
-    return data;
+    return data as Stat;
   } catch (error) {
     console.error('Unexpected error in updateStat:', error);
     return null;
@@ -546,9 +537,7 @@ export const updateStat = async (id: string, updates: Partial<Stat>): Promise<St
 export const deleteStat = async (id: string): Promise<boolean> => {
   try {
     // Usar RPC para contornar o RLS
-    const { data, error } = await supabase.rpc<boolean, {
-      p_id: string;
-    }>(
+    const { data, error } = await supabase.rpc<boolean>(
       'delete_stat',
       {
         p_id: id
@@ -560,7 +549,7 @@ export const deleteStat = async (id: string): Promise<boolean> => {
       return false;
     }
 
-    return data || false;
+    return Boolean(data);
   } catch (error) {
     console.error('Unexpected error in deleteStat:', error);
     return false;

@@ -23,7 +23,7 @@ import {
   Blocks
 } from 'lucide-react';
 
-// Reorganized career paths with uploaded images
+// Reorganized career paths with fixed image paths
 export const careerPathCategories = [
   {
     category: "Educação",
@@ -32,37 +32,37 @@ export const careerPathCategories = [
         title: 'Alfabetização',
         icon: BookOpen,
         color: 'bg-green-100',
-        image: 'lovable-uploads/05197587-8a90-4957-933b-a82fa93c8014.png'
+        image: '/trilhas/Trilhas1-1024x340-essencial.webp'
       },
       {
         title: 'Planilhas',
         icon: FileSpreadsheet,
         color: 'bg-yellow-100',
-        image: 'lovable-uploads/239b6a9e-b89b-4525-b510-275c558d40de.png'
+        image: '/trilhas/Trilhas-1024x310-workspace.webp'
       },
       {
         title: 'Jogos Educativos',
         icon: Blocks,
         color: 'bg-orange-100',
-        image: 'lovable-uploads/fb8f16fe-f31d-4c40-b982-538cc387d56e.png'
+        image: '/trilhas/Trilhas4-1024x340-game1.webp'
       },
       {
         title: 'Matemática',
         icon: Calculator,
         color: 'bg-red-100',
-        image: 'lovable-uploads/3216ab7a-0ca1-4040-a598-07fec8ba8fa4.png'
+        image: '/trilhas/Trilhas3-1024x340-tecnologia-fundamental.webp'
       },
       {
         title: 'Idiomas',
         icon: Languages,
         color: 'bg-blue-100',
-        image: 'lovable-uploads/f7b54e08-5975-481c-900f-be9dd1abddc7.png'
+        image: '/trilhas/Trilhas18-1024x340-inglês.webp'
       },
       {
         title: 'Inteligência Emocional',
         icon: Heart,
         color: 'bg-rose-100',
-        image: 'lovable-uploads/93b9581f-ac4d-487e-9edf-613303560780.png'
+        image: '/trilhas/Trilhas-Evolua.webp.png'
       }
     ]
   },
@@ -73,49 +73,49 @@ export const careerPathCategories = [
         title: 'Programação',
         icon: Terminal,
         color: 'bg-green-100',
-        image: 'lovable-uploads/6fe84a5a-232f-4744-b143-895b6fb89228.png'
+        image: '/trilhas/Trilhas15-1024x340-programacao.webp'
       },
       {
         title: 'Games',
         icon: Gamepad2,
         color: 'bg-yellow-100',
-        image: 'lovable-uploads/4facc3ff-4a86-4058-b5d1-50f8fe07f172.png'
+        image: '/trilhas/Trilhas5-1024x340-game2.webp'
       },
       {
         title: 'UI/UX & Design',
         icon: Figma,
         color: 'bg-blue-100',
-        image: 'lovable-uploads/427b11a1-7f1b-414a-bc12-d094defed121.png'
+        image: '/trilhas/Trilhas10-1024x340-designer.webp'
       },
       {
         title: 'Mobile',
         icon: Smartphone,
         color: 'bg-purple-100',
-        image: 'lovable-uploads/c675d8a6-8ac9-41ac-b5ec-ca0408124b8b.png'
+        image: '/trilhas/Trilhas14-1024x340-dev-apps.webp'
       },
       {
         title: 'Inteligência Artificial',
         icon: BrainCircuit,
         color: 'bg-pink-100',
-        image: 'lovable-uploads/485396f3-f7c4-4db8-9e34-095aad9e245c.png'
+        image: '/trilhas/Trilhas13-1024x340-web.webp'
       },
       {
         title: 'Robótica',
         icon: Bot,
         color: 'bg-indigo-100',
-        image: 'lovable-uploads/29f4e556-43a9-4aae-9e6b-59bdfe1fe1db.png'
+        image: '/trilhas/Trilhas6-1024x340-game3d.webp'
       },
       {
         title: 'Modelagem 3D',
         icon: Blocks,
         color: 'bg-green-100',
-        image: 'lovable-uploads/46caaada-c1df-4fd9-9587-d3ca4bd4b829.png'
+        image: '/trilhas/Trilhas12-1024x340-designer3d.webp'
       },
       {
         title: 'Inteligência Emocional',
         icon: Heart,
         color: 'bg-rose-100',
-        image: 'lovable-uploads/93b9581f-ac4d-487e-9edf-613303560780.png'
+        image: '/trilhas/Trilhas-Evolua.webp.png'
       }
     ]
   },
@@ -126,49 +126,49 @@ export const careerPathCategories = [
         title: 'Administração',
         icon: BarChartHorizontal,
         color: 'bg-green-100',
-        image: 'lovable-uploads/d6306b74-5efa-4eb7-bec2-9366d8e8d6c2.png'
+        image: '/trilhas/Trilhas8-1024x340-rh.webp'
       },
       {
         title: 'Marketing Digital',
         icon: BarChart3,
         color: 'bg-red-100',
-        image: 'lovable-uploads/511154ec-20e2-4e08-a6fd-accbc64d1942.png'
+        image: '/trilhas/Trilhas7-1024x340-contabel.webp'
       },
       {
         title: 'Atendimento',
         icon: HeadphonesIcon,
         color: 'bg-orange-100',
-        image: 'lovable-uploads/fdb8bfd1-b524-457b-8f65-0a0aaeca5da3.png'
+        image: '/trilhas/Trilhas9-1024x340-finanças.webp'
       },
       {
         title: 'Análise de dados',
         icon: AreaChart,
         color: 'bg-blue-100',
-        image: 'lovable-uploads/7610a6fd-f9a3-4699-a75d-c286453efa74.png'
+        image: '/trilhas/Trilhas3-1024x340-tecnologia-fundamental.webp'
       },
       {
         title: 'Produção de Conteúdo',
         icon: Pen,
         color: 'bg-pink-100',
-        image: 'lovable-uploads/373230be-78bc-4695-87c9-fe422269d1f7.png'
+        image: '/trilhas/Trilhas11-1024x340-edicao-video.webp'
       },
       {
         title: 'Finanças',
         icon: Cog,
         color: 'bg-green-100',
-        image: 'lovable-uploads/8a95dc8b-6141-41c9-bdc3-570ddf7b97f2.png'
+        image: '/trilhas/Trilhas9-1024x340-finanças.webp'
       },
       {
         title: 'Videomaker',
         icon: Video,
         color: 'bg-blue-100',
-        image: 'lovable-uploads/fdb8bfd1-b524-457b-8f65-0a0aaeca5da3.png'
+        image: '/trilhas/Trilhas11-1024x340-edicao-video.webp'
       },
       {
         title: 'Inteligência Emocional',
         icon: Heart,
         color: 'bg-rose-100',
-        image: 'lovable-uploads/93b9581f-ac4d-487e-9edf-613303560780.png'
+        image: '/trilhas/Trilhas-Evolua.webp.png'
       }
     ]
   }
