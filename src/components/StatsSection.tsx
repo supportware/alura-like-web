@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { BookOpen, Users, ThumbsUp, Trophy, GraduationCap, Award, Briefcase, Heart, Clock, Star, Globe, Code, Laptop, Loader2 } from 'lucide-react';
 import { fetchStats, Stat } from '@/services/supabase';
