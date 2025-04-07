@@ -121,7 +121,6 @@ export type Database = {
         Row: {
           answer: string
           created_at: string
-          display_order: number | null
           id: string
           question: string
           updated_at: string
@@ -129,7 +128,6 @@ export type Database = {
         Insert: {
           answer: string
           created_at?: string
-          display_order?: number | null
           id?: string
           question: string
           updated_at?: string
@@ -137,7 +135,6 @@ export type Database = {
         Update: {
           answer?: string
           created_at?: string
-          display_order?: number | null
           id?: string
           question?: string
           updated_at?: string
@@ -147,7 +144,6 @@ export type Database = {
       stats: {
         Row: {
           created_at: string
-          display_order: number | null
           icon: string
           id: string
           title: string
@@ -156,7 +152,6 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          display_order?: number | null
           icon: string
           id?: string
           title: string
@@ -165,7 +160,6 @@ export type Database = {
         }
         Update: {
           created_at?: string
-          display_order?: number | null
           icon?: string
           id?: string
           title?: string
@@ -178,7 +172,6 @@ export type Database = {
         Row: {
           created_at: string
           description: string
-          display_order: number | null
           icon: string
           id: string
           title: string
@@ -187,7 +180,6 @@ export type Database = {
         Insert: {
           created_at?: string
           description: string
-          display_order?: number | null
           icon: string
           id?: string
           title: string
@@ -196,7 +188,6 @@ export type Database = {
         Update: {
           created_at?: string
           description?: string
-          display_order?: number | null
           icon?: string
           id?: string
           title?: string
@@ -242,71 +233,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      delete_faq: {
-        Args: {
-          p_id: string
-        }
-        Returns: boolean
-      }
-      delete_stat: {
-        Args: {
-          p_id: string
-        }
-        Returns: boolean
-      }
-      insert_faq: {
-        Args: {
-          p_question: string
-          p_answer: string
-        }
-        Returns: boolean
-      }
-      insert_stat: {
-        Args: {
-          p_title: string
-          p_value: string
-          p_icon: string
-        }
-        Returns: boolean
-      }
-      update_faq: {
-        Args: {
-          p_id: string
-          p_question: string
-          p_answer: string
-        }
-        Returns: boolean
-      }
-      update_faq_order: {
-        Args: {
-          p_id: string
-          p_order: number
-        }
-        Returns: boolean
-      }
-      update_stat: {
-        Args: {
-          p_id: string
-          p_title: string
-          p_value: string
-          p_icon: string
-        }
-        Returns: boolean
-      }
-      update_stat_order: {
-        Args: {
-          p_id: string
-          p_order: number
-        }
-        Returns: boolean
-      }
-      update_study_reason_order: {
-        Args: {
-          p_id: string
-          p_order: number
-        }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never
