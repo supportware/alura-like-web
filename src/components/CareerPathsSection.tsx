@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { 
@@ -185,48 +184,40 @@ const careerPathCategories = [
 
 const CareerPathsSection = () => {
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-black">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-12 text-Excel-black">
+        <h2 className="text-3xl font-bold text-center mb-12 text-white">
           Trilhas de Cursos por Carreira
         </h2>
         
         <div className="space-y-12">
           {careerPathCategories.map((category, catIndex) => (
             <div key={catIndex} className="mb-10">
-              <h3 className="text-2xl font-bold mb-6 text-Excel-black">{category.category}</h3>
+              <h3 className="text-2xl font-bold mb-6 text-white">{category.category}</h3>
               
-              <Carousel className="w-full">
-                <CarouselContent>
+              <Carousel
+                opts={{
+                  align: "start",
+                  slidesToScroll: 1
+                }}
+                className="w-full"
+              >
+                <CarouselContent className="-ml-4">
                   {category.paths.map((path, pathIndex) => (
-                    <CarouselItem key={pathIndex} className="md:basis-1/3 lg:basis-1/4">
-                      <Card className="category-card border hover:cursor-pointer h-full">
-                        <CardContent className="p-0">
-                          <div className="h-40 overflow-hidden">
-                            <img 
-                              src={path.image} 
-                              alt={path.title}
-                              className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
-                            />
-                          </div>
-                          <div className="p-4">
-                            <div className="flex items-start">
-                              <div className={`${path.color} p-3 rounded-full mr-4`}>
-                                <path.icon className="h-6 w-6 text-Excel-blue" />
-                              </div>
-                              <div>
-                                <h3 className="font-bold text-lg">{path.title}</h3>
-                                <p className="text-Excel-darkgray text-sm mt-1">Explore a trilha</p>
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
+                    <CarouselItem key={pathIndex} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                      <div className="overflow-hidden rounded-lg shadow-lg h-full cursor-pointer transition-transform duration-300 hover:scale-105">
+                        <img 
+                          src={path.image} 
+                          alt={path.title}
+                          className="w-full h-full object-cover"
+                          style={{ aspectRatio: '16/9' }}
+                        />
+                      </div>
                     </CarouselItem>
                   ))}
                 </CarouselContent>
-                <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2" />
-                <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2" />
+                <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 bg-gray-900/50 text-white hover:bg-gray-900/80 border-none" />
+                <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 bg-gray-900/50 text-white hover:bg-gray-900/80 border-none" />
               </Carousel>
             </div>
           ))}
