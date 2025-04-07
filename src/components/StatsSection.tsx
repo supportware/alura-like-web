@@ -28,14 +28,16 @@ const StatsSection = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
+        console.log("Fetching stats data...");
         const data = await fetchStats();
+        console.log("Stats data received:", data);
         if (data.length === 0) {
           setError('Nenhuma estatística encontrada');
         }
         setStats(data);
       } catch (err) {
+        console.error("Error fetching stats:", err);
         setError('Erro ao carregar estatísticas');
-        console.error(err);
       } finally {
         setLoading(false);
       }
