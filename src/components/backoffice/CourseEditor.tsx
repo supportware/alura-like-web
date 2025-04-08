@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { 
   Card, 
@@ -33,7 +33,8 @@ import {
   updateCourse, 
   deleteCourse 
 } from '@/services/supabase';
-import { PlusCircle, Edit, Trash2, Loader2, FileImage } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { PlusCircle, Edit, Trash2, Loader2, FileImage, Upload, X, Image as ImageIcon } from 'lucide-react';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 
@@ -81,12 +82,12 @@ const CourseEditor = () => {
     badge_color: 'blue',
   });
   const [isEditing, setIsEditing] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    loadCourses();
-  }, []);
-
-  const loadCourses = async () => {
+  const loadCourses = useCallback(async () => {
     setLoading(true);
     try {
       const data = await fetchCourses();
@@ -101,7 +102,11 @@ const CourseEditor = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    loadCourses();
+  }, [loadCourses]);
 
   const handleAddNewClick = () => {
     setCurrentCourse({
@@ -121,6 +126,14 @@ const CourseEditor = () => {
     setCurrentCourse(course);
     setIsEditing(true);
     setIsDialogOpen(true);
+    
+    // Se o curso já tiver uma imagem, mostra o preview
+    if (course.image_url) {
+      setImagePreview(course.image_url);
+    } else {
+      setImagePreview(null);
+    }
+    setImageFile(null);
   };
 
   const handleSave = async () => {
@@ -136,49 +149,140 @@ const CourseEditor = () => {
 
     setLoading(true);
     try {
-      if (isEditing && currentCourse.id) {
-        await updateCourse(currentCourse.id, {
-          title: currentCourse.title,
-          instructor: currentCourse.instructor,
-          level: currentCourse.level,
-          hours: typeof currentCourse.hours === 'string' 
-            ? parseFloat(currentCourse.hours) 
-            : currentCourse.hours || 0,
-          image_url: currentCourse.image_url,
-          category: currentCourse.category,
-          badge_color: currentCourse.badge_color,
-        });
-
-        toast({
-          title: 'Curso atualizado',
-          description: 'O curso foi atualizado com sucesso.',
-        });
-      } else {
-        await createCourse({
-          title: currentCourse.title || '',
-          instructor: currentCourse.instructor || '',
-          level: currentCourse.level || 'iniciante',
-          hours: typeof currentCourse.hours === 'string' 
-            ? parseFloat(currentCourse.hours) 
-            : currentCourse.hours || 0,
-          image_url: currentCourse.image_url || '',
-          category: currentCourse.category || 'desenvolvimento',
-          badge_color: currentCourse.badge_color || 'blue',
-        });
-
-        toast({
-          title: 'Curso adicionado',
-          description: 'O curso foi adicionado com sucesso.',
-        });
+      // Se tiver um arquivo de imagem selecionado, faz o processamento
+      let imageUrl = currentCourse.image_url;
+      
+      if (imageFile) {
+        setIsUploading(true);
+        try {
+          // Cria um elemento de canvas para redimensionar a imagem
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          const img = new Image();
+          
+          // Aguarda o carregamento da imagem
+          await new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = reject;
+            img.src = URL.createObjectURL(imageFile);
+          });
+          
+          // Define o tamanho do canvas para 300x180
+          canvas.width = 300;
+          canvas.height = 180;
+          
+          // Desenha a imagem redimensionada no canvas
+          ctx?.drawImage(img, 0, 0, 300, 180);
+          
+          // Converte o canvas para uma URL de dados base64
+          const base64Image = canvas.toDataURL('image/webp', 0.9);
+          console.log('Imagem convertida para Base64:', base64Image.substring(0, 50) + '...');
+          
+          // Usa a URL de dados diretamente
+          imageUrl = base64Image;
+          console.log('Usando URL de dados base64 em vez de fazer upload para o Storage');
+        } catch (error) {
+          console.error('Erro ao processar a imagem:', error);
+          toast({
+            title: 'Erro no processamento',
+            description: 'Não foi possível processar a imagem. Por favor, tente novamente.',
+            variant: 'destructive',
+          });
+          setLoading(false);
+          return; // Sai da função se o processamento falhar
+        } finally {
+          setIsUploading(false);
+        }
       }
 
-      setIsDialogOpen(false);
-      loadCourses();
+      // Converte horas para número
+      const hoursValue = typeof currentCourse.hours === 'string' 
+        ? parseFloat(currentCourse.hours) 
+        : currentCourse.hours || 0;
+
+      // Preparar objeto de dados para salvar
+      const courseData = {
+        title: currentCourse.title || '',
+        instructor: currentCourse.instructor || '',
+        level: currentCourse.level || 'iniciante',
+        hours: hoursValue,
+        image_url: imageUrl || '',
+        category: currentCourse.category || 'desenvolvimento',
+        badge_color: currentCourse.badge_color || 'blue',
+      };
+
+      console.log('Dados a serem salvos:', courseData);
+
+      let success = false;
+
+      if (isEditing && currentCourse.id) {
+        // Atualizar curso existente
+        console.log(`Atualizando curso com ID: ${currentCourse.id}`);
+        
+        try {
+          // Usar as funções auxiliares em vez do cliente Supabase direto
+          const result = await updateCourse(currentCourse.id, courseData);
+          console.log('Resultado da atualização:', result);
+          
+          if (result) {
+            success = true;
+            toast({
+              title: 'Sucesso',
+              description: 'Curso atualizado com sucesso.',
+            });
+          } else {
+            throw new Error('Não foi possível atualizar o curso');
+          }
+        } catch (updateError) {
+          console.error('Erro específico na atualização:', updateError);
+          throw updateError;
+        }
+      } else {
+        // Criar novo curso
+        console.log('Criando novo curso');
+        
+        try {
+          const result = await createCourse(courseData);
+          console.log('Resultado da criação:', result);
+          
+          if (result) {
+            success = true;
+            toast({
+              title: 'Sucesso',
+              description: 'Curso adicionado com sucesso.',
+            });
+          } else {
+            throw new Error('Não foi possível criar o curso');
+          }
+        } catch (createError) {
+          console.error('Erro específico na criação:', createError);
+          throw createError;
+        }
+      }
+      
+      if (success) {
+        // Recarregar a lista de cursos
+        console.log('Recarregando lista de cursos...');
+        try {
+          await loadCourses();
+          console.log('Lista de cursos atualizada com sucesso');
+          
+          // Fechar o diálogo e redefinir os estados
+          setIsDialogOpen(false);
+          setImageFile(null);
+          setImagePreview(null);
+        } catch (loadError) {
+          console.error('Erro ao recarregar cursos:', loadError);
+          // Continua mesmo se falhar ao recarregar
+        }
+      }
     } catch (error) {
-      console.error('Error saving course:', error);
+      console.error('Erro completo:', error);
       toast({
         title: 'Erro',
-        description: 'Não foi possível salvar o curso.',
+        description: isEditing 
+          ? 'Não foi possível atualizar o curso.' 
+          : 'Não foi possível adicionar o curso.',
         variant: 'destructive',
       });
     } finally {
@@ -195,8 +299,8 @@ const CourseEditor = () => {
     try {
       await deleteCourse(id);
       toast({
-        title: 'Curso excluído',
-        description: 'O curso foi excluído com sucesso.',
+        title: 'Sucesso',
+        description: 'Curso excluído com sucesso.',
       });
       loadCourses();
     } catch (error) {
@@ -213,6 +317,46 @@ const CourseEditor = () => {
 
   const getBadgeStyle = (color: string) => {
     return `bg-${color}-100 text-${color}-800 dark:bg-${color}-900 dark:text-${color}-300`;
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    // Verifica o tipo do arquivo
+    if (!file.type.includes('image/')) {
+      toast({
+        title: 'Tipo de arquivo inválido',
+        description: 'Por favor, selecione uma imagem.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
+    // Tamanho máximo: 2MB
+    if (file.size > 2 * 1024 * 1024) {
+      toast({
+        title: 'Arquivo muito grande',
+        description: 'O tamanho máximo permitido é 2MB.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
+    // Atualiza o estado com o arquivo selecionado
+    setImageFile(file);
+    
+    // Cria uma URL para preview da imagem
+    const previewUrl = URL.createObjectURL(file);
+    setImagePreview(previewUrl);
+  };
+  
+  const handleRemoveImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   return (
@@ -418,15 +562,94 @@ const CourseEditor = () => {
               </div>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="image_url">URL da Imagem</Label>
-              <Input
-                id="image_url"
-                value={currentCourse.image_url || ''}
-                onChange={(e) => setCurrentCourse({ ...currentCourse, image_url: e.target.value })}
-                placeholder="https://exemplo.com/imagem.jpg"
-              />
+              <Label htmlFor="image_upload">Imagem do Curso (300x180 WebP)</Label>
+              <div className="flex gap-2 items-center">
+                <Input
+                  id="image_upload"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                />
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex-1"
+                >
+                  <Upload className="mr-2 h-4 w-4" />
+                  {imageFile ? 'Alterar imagem' : 'Selecionar imagem'}
+                </Button>
+                
+                {imagePreview && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={handleRemoveImage}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+              
+              {imagePreview ? (
+                <div className="mt-2 border rounded-md overflow-hidden">
+                  <div className="relative">
+                    <img 
+                      src={imagePreview} 
+                      alt="Preview" 
+                      className="w-full h-auto"
+                      style={{ maxHeight: '180px', objectFit: 'cover' }}
+                    />
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="text-white border-white"
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        <Edit className="mr-2 h-4 w-4" />
+                        Alterar
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ) : currentCourse.image_url ? (
+                <div className="mt-2 border rounded-md overflow-hidden">
+                  <div className="relative">
+                    <img 
+                      src={currentCourse.image_url} 
+                      alt="Imagem atual" 
+                      className="w-full h-auto"
+                      style={{ maxHeight: '180px', objectFit: 'cover' }}
+                    />
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="text-white border-white"
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        <Edit className="mr-2 h-4 w-4" />
+                        Alterar
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="mt-2 border rounded-md p-8 flex flex-col items-center justify-center text-muted-foreground bg-muted/30">
+                  <ImageIcon className="h-8 w-8 mb-2" />
+                  <p className="text-sm">Nenhuma imagem selecionada</p>
+                  <p className="text-xs">A imagem será redimensionada para 300x180 pixels e convertida para WebP</p>
+                </div>
+              )}
+              
               <p className="text-xs text-muted-foreground">
-                URL da imagem do curso. Recomendamos usar uma imagem quadrada.
+                Selecione uma imagem para o curso. A imagem será redimensionada para 300x180 pixels e convertida para o formato WebP.
               </p>
             </div>
           </div>

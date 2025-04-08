@@ -11,7 +11,7 @@ const Hero = () => {
             Aprenda tecnologia com cursos online
           </h1>
           <p className="text-lg md:text-xl mb-8">
-            Comece com programação, UX, data science e muito mais. Evolua sua carreira com mais de 1.500 cursos.
+            Comece com programação, UX, data science e muito mais. Evolua sua carreira com mais de 80 cursos interativos.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Button className="bg-white text-Excel-blue hover:bg-gray-100 text-lg py-6 px-8">

@@ -556,6 +556,66 @@ export const deleteStat = async (id: string): Promise<boolean> => {
   }
 };
 
+// Career Paths functions
+export const fetchCareerPaths = async (): Promise<CareerPath[]> => {
+  const { data, error } = await supabase
+    .from('career_paths')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching career paths:', error);
+    return [];
+  }
+
+  return data || [];
+};
+
+export const createCareerPath = async (newPath: Omit<CareerPath, 'id' | 'created_at' | 'updated_at'>): Promise<CareerPath | null> => {
+  const { data, error } = await supabase
+    .from('career_paths')
+    .insert(newPath)
+    .select('*')
+    .single();
+
+  if (error) {
+    console.error('Error creating career path:', error);
+    return null;
+  }
+
+  return data;
+};
+
+export const updateCareerPath = async (id: string, updates: Partial<CareerPath>): Promise<CareerPath | null> => {
+  const { data, error } = await supabase
+    .from('career_paths')
+    .update(updates)
+    .eq('id', id)
+    .select('*')
+    .single();
+
+  if (error) {
+    console.error('Error updating career path:', error);
+    return null;
+  }
+
+  return data;
+};
+
+export const deleteCareerPath = async (id: string): Promise<boolean> => {
+  const { error } = await supabase
+    .from('career_paths')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error deleting career path:', error);
+    return false;
+  }
+
+  return true;
+};
+
 // Google Maps testimonial import function
 export const importGoogleMapsReviews = async (placeId: string): Promise<Testimonial[] | null> => {
   try {
