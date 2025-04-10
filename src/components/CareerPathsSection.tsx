@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { careerPathCategories } from '@/data/careerPathsData';
 import CareerCategory from './career-paths/CareerCategory';
-import { fetchActiveCareerPaths, CareerPath } from '@/services/supabase';
+import { fetchCareerPaths, CareerPath } from '@/services/supabase';
 import { Loader2, Code, PenTool, BarChart, Users, Briefcase, Cloud, Smartphone, Shield, Server } from 'lucide-react';
 
 const CareerPathsSection = () => {
@@ -11,10 +11,8 @@ const CareerPathsSection = () => {
   const loadTracks = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await fetchActiveCareerPaths();
-      // Ordenar as trilhas por ordem
-      const sortedData = [...data].sort((a, b) => a.order - b.order);
-      setTracks(sortedData);
+      const data = await fetchCareerPaths();
+      setTracks(data);
     } catch (error) {
       console.error('Error loading career paths:', error);
     } finally {
@@ -50,7 +48,7 @@ const CareerPathsSection = () => {
         title: track.title,
         icon: getIconComponent(track.icon),
         color: 'bg-green-100',
-        image: track.image_path || `/trilhas/Trilhas${Math.floor(Math.random() * 18) + 1}-1024x340-essencial.webp`
+        image: `/trilhas/Trilhas${Math.floor(Math.random() * 18) + 1}-1024x340-essencial.webp`
       }))
     };
   };
@@ -58,14 +56,9 @@ const CareerPathsSection = () => {
   return (
     <section className="py-16 bg-black">
       <div className="container mx-auto px-4">
-        <div className="flex justify-center mb-12">
-          <img 
-            src="/trilhas/Trilhas-Evolua.webp.png" 
-            alt="Trilhas de Cursos por Carreira" 
-            className="max-w-full h-auto"
-            style={{ maxHeight: '150px' }}
-          />
-        </div>
+        <h2 className="text-3xl font-bold text-center mb-12 text-white">
+          Trilhas de Cursos por Carreira
+        </h2>
         
         {loading ? (
           <div className="flex justify-center items-center h-64">

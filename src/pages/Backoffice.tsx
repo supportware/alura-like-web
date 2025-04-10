@@ -16,13 +16,12 @@ import {
 import { 
   LayoutDashboard, 
   Book, 
-  GraduationCap,
+  GraduationCap, 
   Users, 
   BarChart, 
   MessageSquare, 
   HelpCircle,
-  LogOut,
-  ImagePlus 
+  LogOut 
 } from 'lucide-react';
 import Dashboard from '@/components/backoffice/Dashboard';
 import StudyReasonsEditor from '@/components/backoffice/StudyReasonsEditor';
@@ -30,8 +29,7 @@ import FAQEditor from '@/components/backoffice/FAQEditor';
 import TestimonialsEditor from '@/components/backoffice/TestimonialsEditor';
 import StatsEditor from '@/components/backoffice/StatsEditor';
 import CourseEditor from '@/components/backoffice/CourseEditor';
-import TrackManager from '@/components/backoffice/TrackManager';
-import SlideshowEditor from '@/components/backoffice/SlideshowEditor';
+import TrackEditor from '@/components/backoffice/TrackEditor';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -60,12 +58,11 @@ const Backoffice = () => {
     switch(activeSection) {
       case 'dashboard': return <Dashboard />;
       case 'courses': return <CourseEditor />;
-      case 'career-paths': return <TrackManager />;
+      case 'career-paths': return <TrackEditor />;
       case 'testimonials': return <TestimonialsEditor />;
       case 'stats': return <StatsEditor />;
       case 'study-reasons': return <StudyReasonsEditor />;
       case 'faq': return <FAQEditor />;
-      case 'slideshow': return <SlideshowEditor />;
       default: return <Dashboard />;
     }
   };
@@ -94,16 +91,6 @@ const Backoffice = () => {
                   >
                     <LayoutDashboard size={18} />
                     <span>Dashboard</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                
-                <SidebarMenuItem>
-                  <SidebarMenuButton 
-                    onClick={() => setActiveSection('slideshow')}
-                    isActive={activeSection === 'slideshow'}
-                  >
-                    <ImagePlus size={18} />
-                    <span>Slideshow</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 
