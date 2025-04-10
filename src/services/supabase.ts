@@ -1,5 +1,8 @@
 import { supabase } from '@/integrations/supabase/client';
 
+// Re-export supabase client for direct access
+export { supabase };
+
 // Interfaces para as entidades
 export interface StudyReason {
   id: string;
@@ -28,6 +31,12 @@ export interface CareerPath {
   title: string;
   description: string;
   icon: string;
+  image_path: string;
+  category: string;
+  order: number;
+  active: boolean;
+  in_carousel: boolean; // Indica se a trilha aparece no carrossel da página inicial
+  carousel_order: number; // Ordem de exibição no carrossel
   created_at: string;
   updated_at: string;
 }
@@ -72,6 +81,21 @@ export interface BlogPost {
   read_time: string;
   image_url: string;
   category: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Slide {
+  id: string;
+  title: string;
+  description: string;
+  image_base64: string;
+  primary_button_text?: string;
+  secondary_button_text?: string;
+  primary_button_url?: string;
+  secondary_button_url?: string;
+  order: number;
+  active: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -561,10 +585,25 @@ export const fetchCareerPaths = async (): Promise<CareerPath[]> => {
   const { data, error } = await supabase
     .from('career_paths')
     .select('*')
-    .order('created_at', { ascending: false });
+    .order('order', { ascending: true });
 
   if (error) {
     console.error('Error fetching career paths:', error);
+    return [];
+  }
+
+  return data || [];
+};
+
+export const fetchActiveCareerPaths = async (): Promise<CareerPath[]> => {
+  const { data, error } = await supabase
+    .from('career_paths')
+    .select('*')
+    .eq('active', true)
+    .order('order', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching active career paths:', error);
     return [];
   }
 
@@ -610,6 +649,119 @@ export const deleteCareerPath = async (id: string): Promise<boolean> => {
 
   if (error) {
     console.error('Error deleting career path:', error);
+    return false;
+  }
+
+  return true;
+};
+
+// Função para atualizar o status no carrossel
+export const updateCareerPathCarouselStatus = async (id: string, inCarousel: boolean, carouselOrder: number = 0): Promise<CareerPath | null> => {
+  const { data, error } = await supabase
+    .from('career_paths')
+    .update({
+      in_carousel: inCarousel,
+      carousel_order: carouselOrder
+    })
+    .eq('id', id)
+    .select('*')
+    .single();
+
+  if (error) {
+    console.error('Erro ao atualizar status no carrossel:', error);
+    return null;
+  }
+
+  return data;
+};
+
+// Função para obter todas as trilhas que estão no carrossel
+export const fetchCarouselPaths = async (): Promise<CareerPath[]> => {
+  const { data, error } = await supabase
+    .from('career_paths')
+    .select('*')
+    .eq('in_carousel', true)
+    .eq('active', true)
+    .order('carousel_order', { ascending: true });
+
+  if (error) {
+    console.error('Erro ao buscar trilhas do carrossel:', error);
+    return [];
+  }
+
+  return data || [];
+};
+
+// Slideshow functions
+export const fetchSlides = async (): Promise<Slide[]> => {
+  const { data, error } = await supabase
+    .from('slideshow')
+    .select('*')
+    .order('order', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching slides:', error);
+    return [];
+  }
+
+  return data || [];
+};
+
+// Fetch only active slides for the public facing site
+export const fetchActiveSlides = async (): Promise<Slide[]> => {
+  const { data, error } = await supabase
+    .from('slideshow')
+    .select('*')
+    .eq('active', true)
+    .order('order', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching active slides:', error);
+    return [];
+  }
+
+  return data || [];
+};
+
+export const createSlide = async (newSlide: Omit<Slide, 'id' | 'created_at' | 'updated_at'>): Promise<Slide | null> => {
+  const { data, error } = await supabase
+    .from('slideshow')
+    .insert(newSlide)
+    .select('*')
+    .single();
+
+  if (error) {
+    console.error('Error creating slide:', error);
+    return null;
+  }
+
+  return data;
+};
+
+export const updateSlide = async (id: string, updates: Partial<Slide>): Promise<Slide | null> => {
+  const { data, error } = await supabase
+    .from('slideshow')
+    .update(updates)
+    .eq('id', id)
+    .select('*')
+    .single();
+
+  if (error) {
+    console.error('Error updating slide:', error);
+    return null;
+  }
+
+  return data;
+};
+
+export const deleteSlide = async (id: string): Promise<boolean> => {
+  const { error } = await supabase
+    .from('slideshow')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error deleting slide:', error);
     return false;
   }
 
